@@ -1,0 +1,195 @@
+[
+    {
+        "ParameterKey": "DeployRDS", 
+        "ParameterValue": "#{deploy-rds}#"
+    },
+    {
+        "ParameterKey": "DeployEKS",
+        "ParameterValue": "#{deploy-eks}#"
+    },
+    {
+        "ParameterKey": "DeployCloudFront",
+        "ParameterValue": "#{deploy-cloud-front}#"
+    },
+    {
+        "ParameterKey": "DeploySQS",
+        "ParameterValue": "#{deploy-sqs}#"
+    },
+    {
+        "ParameterKey": "DeployElasticCache",
+        "ParameterValue": "#{deploy-elastic-cache}#"
+    },
+    {
+        "ParameterKey": "DeployAttachment",
+        "ParameterValue": "#{deploy-attachment}#"
+    },
+    {
+        "ParameterKey": "project",
+        "ParameterValue": "#{project-name}#"
+    },
+    {
+        "ParameterKey": "environment",
+        "ParameterValue": "#{env}#"
+    },
+    {
+        "ParameterKey": "applicationcode",
+        "ParameterValue": "#{application-code}#"
+    },
+    {
+        "ParameterKey": "pmo",
+        "ParameterValue": "#{pmo}#"
+    },
+    {
+        "ParameterKey": "costcenter",
+        "ParameterValue": "#{cost-center}#"
+    },
+    {
+        "ParameterKey": "responsible",
+        "ParameterValue": "#{responsible}#"
+    },
+    {
+        "ParameterKey": "businessservice",
+        "ParameterValue": "#{business-service}#"
+    }, 
+    {
+        "ParameterKey": "DBName",
+        "ParameterValue": "#{rds-db-name}#"
+    },
+    {
+        "ParameterKey": "DBNameDatical",
+        "ParameterValue": "#{rds-db-name-datical}#"
+    },
+    {
+        "ParameterKey": "DBSnapshot",
+        "ParameterValue": "#{rds-db-snapshot}#"
+    },
+    {
+        "ParameterKey": "AllocatedStorage",
+        "ParameterValue": "#{rds-allocated-storage}#"
+    },
+    {
+        "ParameterKey": "MaxAllocatedStorage",
+        "ParameterValue": "#{rds-max-allocated-storage}#"
+    },
+    {
+        "ParameterKey": "UsuarioConexion",
+        "ParameterValue": "#{rds-conection-user}#"
+    },
+    {
+        "ParameterKey": "Engine",
+        "ParameterValue": "#{rds-engine}#"
+    },
+    {
+        "ParameterKey": "IpFluid",
+        "ParameterValue": "#{rds-fluid-ip}#"
+    },
+    {
+        "ParameterKey": "IpAdicional",
+        "ParameterValue": "#{rds-aditional-ip}#"
+    },
+    {
+        "ParameterKey": "domainname",
+        "ParameterValue": "#{cf-domain-name}#"
+    },
+    {
+        "ParameterKey": "buckets3",
+        "ParameterValue": "#{cf-buckets3-name}#"
+    },
+    {
+        "ParameterKey": "acmcertificatearn",
+        "ParameterValue": "#{acm-certificate-arn}#"
+    },
+    {
+        "ParameterKey": "FrontInterno",
+        "ParameterValue": "#{cf-solo-acceso-red-interna}#"
+    },
+    {
+        "ParameterKey": "QueueName",
+        "ParameterValue": "#{sqs-queue-name}#"
+    },
+    {
+        "ParameterKey": "QueueType",
+        "ParameterValue": "#{sqs-queue-type}#"
+    },
+    {
+        "ParameterKey": "DelaySeconds",
+        "ParameterValue": "#{sqs-delay-seconds}#"
+    },
+    {
+        "ParameterKey": "MessageRetentionPeriod",
+        "ParameterValue": "#{sqs-message-retention-period}#"
+    },
+    {
+        "ParameterKey": "MaximumMessageSize",
+        "ParameterValue": "#{sqs-maximum-message-size}#"
+    },
+    {
+        "ParameterKey": "CacheEngine",
+        "ParameterValue": "#{ec-cache-engine}#"
+    },
+    {
+        "ParameterKey": "CacheNodes",
+        "ParameterValue": "#{ec-cache-nodes}#"
+    },
+    {
+        "ParameterKey": "TagsClasInfoSegCID",
+        "ParameterValue": "#{tags-clas-info-seguridad-cid}#"
+    },
+    {
+        "ParameterKey": "apiClientsuidid",
+        "ParameterValue": "#{apiClientsuidid}#"
+    },
+    {
+        "ParameterKey": "apiClientsuidsecret",
+        "ParameterValue": "#{apiClientsuidsecret}#"
+    },
+    {
+        "ParameterKey": "clientId",
+        "ParameterValue": "#{clientId}#"
+    },
+    {
+        "ParameterKey": "clientSecret",
+        "ParameterValue": "#{clientSecret}#"
+    },
+    {
+        "ParameterKey": "keystorePassword",
+        "ParameterValue": "#{keystorePassword}#"
+    },
+    {
+        "ParameterKey": "keystoreName",
+        "ParameterValue": "#{keystoreName}#"
+    },
+    {
+        "ParameterKey": "DynamoTableSecurityClaveAlfanumericaConsumerParameter",
+        "ParameterValue": "#{dynamo-table-name-consumerParameter}#"
+    },
+    {
+        "ParameterKey": "DynamoTableSecurityClaveAlfanumericaManagement",
+        "ParameterValue": "#{dynamo-table-name-management}#"
+    },
+    {
+        "ParameterKey": "DynamoTableSecurityClaveAlfanumericaMovement",
+        "ParameterValue": "#{dynamo-table-name-movement}#"
+    },
+    {
+        "ParameterKey": "DynamoTableSecurityClaveAlfanumericaBlockedlist",
+        "ParameterValue": "#{dynamo-table-name-blockedlist}#"
+    },
+    {
+        "ParameterKey": "DynamoTableSecurityClaveAlfanumericaBackupDynamo",
+        "ParameterValue": "#{dynamo-table-name-backupdynamo}#"
+    },
+    {
+        "ParameterKey": "mqapplicationname",
+        "ParameterValue": "#{mq-application-name}#"
+    },
+    {
+        "ParameterKey": "mqpass",
+        "ParameterValue": "#{mq-pass}#"
+    },
+    {
+        "ParameterKey": "mqmaxretries",
+        "ParameterValue": "#{mq-max-retries}#"
+    }
+
+]

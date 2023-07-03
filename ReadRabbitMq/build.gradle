@@ -1,0 +1,44 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.6'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+	implementation group: 'org.springframework.integration', name: 'spring-integration-amqp'
+	implementation 'io.projectreactor.rabbitmq:reactor-rabbitmq:1.5.6'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+jar {
+	enabled = true
+	classifier = ''
+}
+
+bootJar {
+	enabled = false
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

@@ -1,0 +1,30 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: #{service}#-configmap
+  namespace: #{namespace}#
+data:
+  application.yaml: |-
+    server.port: 8080
+    spring.application.name: 'Alphanumeric_Password_Desencolar'
+    spring.devtools.add-properties: false
+    spring.profiles.include: null
+    spring.profiles.active: #{env}#
+    logging.level.root: #{log-level}#
+    aws.region: #{secret-region}#
+    aws.credentialsSecretName: #{credentialsSecretName}#
+    aws.cognito.appClientId: #{cognito-appclientid}#
+    aws.cognito.appClientSecret: #{cognito-appclientsecret}#
+    aws.cognito.userPoolId: #{cognito-user-poolid}#
+    aws.kms.keyId: #{kms-keyid}#
+    aws.kms.asymmetricAlias: #{kms-asymmetricAlias}#
+    spring.rabbitmq.host: #{rabbitmq-host}#
+    spring.rabbitmq.port: #{rabbitmq-port}#
+    spring.rabbitmq.username: #{rabbitmq-username}#
+    spring.rabbitmq.password: #{rabbitmq-password}#
+    spring.rabbitmq.virtualhost: #{rabbitmq-virtualhost}#
+    spring.rabbitmq.ssl.enabled: #{rabbitmq-ssl}#
+    queue.queue_create: #{queue-create}# 
+    queue.queue_auth:   #{queue-auth}#
+    cognito.timewait: #{cognito-timewait}#
+    cognito.reintentos: #{cognito-reintentos}#

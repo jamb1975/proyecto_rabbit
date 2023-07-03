@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "aws.kms",
+      "type": "co.com.bancolombia.kms.properties.KmsBaseProperties",
+      "sourceType": "co.com.bancolombia.kms.properties.KmsBaseProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "aws.kms.key-id",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.kms.properties.KmsBaseProperties"
+    }
+  ],
+  "hints": []
+}

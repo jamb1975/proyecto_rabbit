@@ -1,0 +1,4 @@
+Necesidad: Estabilizar el ambiente de produccion con la primera version de chats
+Solucion: Esta es la primera version que se instala en produccion del componente que permite consultar los empleados del banco para posteriormente extraer los chats. Este componente solo llena la cola SQS, no extrae los chats.
+Impacto: No existe
+Beneficio: Iniciar la estabilizacion de produccion con un paso a produccion en pasivo.

@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':model')
+    implementation "com.amazonaws:aws-java-sdk-core:${awscore}"
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+}

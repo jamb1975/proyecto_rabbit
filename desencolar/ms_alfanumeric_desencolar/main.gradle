@@ -1,0 +1,121 @@
+import org.gradle.api.JavaVersion
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
+allprojects {
+    repositories {
+        maven {
+            url 'https://artifactory.apps.bancolombia.com/maven-bancolombia'
+        }
+    }
+}
+
+subprojects {
+    subproject ->
+
+        apply plugin: 'idea'
+        apply plugin: 'java'
+        apply plugin: 'jacoco'
+        apply plugin: 'io.spring.dependency-management'
+        apply plugin: 'org.springframework.boot'
+
+        //compileJava.dependsOn validateStructure
+        sourceCompatibility = JavaVersion.VERSION_11
+        if (subproject != project(':app-service')) {
+            bootJar {
+                enabled = false
+            }
+            jar {
+                enabled = true
+            }
+        } else {
+            bootJar {
+                enabled = true
+            }
+            jar {
+                // To disable the *-plain.jar
+                enabled = false
+            }
+        }
+        dependencies {
+
+            implementation 'org.springframework.boot:spring-boot-starter-actuator'
+            implementation 'org.springframework.boot:spring-boot-starter-validation'
+           // implementation 'org.springframework.boot:spring-boot-starter-web'
+            implementation 'org.springframework.boot:spring-boot-starter-webflux'
+            implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+            annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+
+            implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+            implementation "org.springdoc:springdoc-openapi-webmvc-core:${springdocVersion}"
+            implementation "org.springdoc:springdoc-openapi-data-rest:${springdocVersion}"
+            implementation "org.springdoc:springdoc-openapi-webflux-ui:${springdocVersion}"
+            implementation "com.google.code.gson:gson:${gsonVersion}"
+
+            implementation platform('software.amazon.awssdk:bom:2.17.271')
+            implementation 'software.amazon.awssdk:sts'
+            implementation 'software.amazon.awssdk:cognitoidentityprovider'
+            implementation 'software.amazon.awssdk:kms'
+
+
+            compileOnly 'org.projectlombok:lombok'
+            annotationProcessor 'org.projectlombok:lombok'
+            testImplementation 'org.springframework.boot:spring-boot-starter-test'
+            testImplementation 'io.projectreactor:reactor-test'
+
+            compileOnly "org.projectlombok:lombok:${lombokVersion}"
+            annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+            testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+            testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        }
+        dependencyManagement {
+            imports {
+                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            }
+        }
+
+        test.finalizedBy(project.tasks.jacocoTestReport)
+
+        jacocoTestReport {
+            dependsOn test
+            reports {
+                xml.enabled true
+                xml.destination file("${buildDir}/reports/jacoco.xml")
+                csv.enabled false
+                html.destination file("${buildDir}/reports/jacocoHtml")
+            }
+        }
+
+        tasks.named('test') {
+            useJUnitPlatform()
+        }
+
+}
+
+jacoco {
+    reportsDir = file("$buildDir/reports")
+}
+
+task jacocoMergedReport(type: JacocoReport) {
+    dependsOn = subprojects.jacocoTestReport
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output)
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true'
+    ]
+}
+tasks.named('wrapper') {
+    gradleVersion = '7.4.2'
+}

@@ -1,0 +1,14 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: "RpcClientRabbit"
+  main:
+    web-application-type: "reactive"
+
+  rabbitmq:
+    host: "0.0.0.0"
+    port: 5672
+    username: "admin"
+    password: "admin"
+    virtualhost: "/"

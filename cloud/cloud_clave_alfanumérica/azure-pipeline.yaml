@@ -1,0 +1,174 @@
+resources:
+  repositories:
+    - repository: Cloud_cld0002001_arq_despliegues_cloud
+      type: git
+      ref: refs/heads/trunk
+      name: Cloud_cld0002001_arq_despliegues_cloud
+
+    - repository: Template_DevSecOps_IaC
+      type: git
+      ref: refs/heads/trunk
+      name: Template_DevSecOps_IaC
+
+parameters:
+  #DEV-------------------------------------------------------------
+  - name: deploy_dev_main
+    displayName: Deploy on dev? [main]
+    type: boolean
+    default: false
+
+  #QA---------------------------------------------------------------
+  - name: deploy_qa_main
+    displayName: Deploy on qa? [main]
+    type: boolean
+    default: false
+
+  #PDN--------------------------------------------------------------
+  - name: deploy_pdn_main
+    displayName: Deploy on pdn? [main]
+    type: boolean
+    default: false
+
+trigger:
+  branches:
+    include:
+      - trunk
+      - feature/*
+
+variables:
+  ### GENERALES ###
+  application-code: 'nu0191001'
+  project-name: 'clave-alfanumerica'
+  pmo: 'pmo29003'
+  cost-center: 'C103500223'
+  business-service: 'ecosistemas-de-riesgos-seguridad-y-apoyo-ti'
+  responsible: 'TRANSF Y SOPORTE AUTENTIC Y MONITOREO'
+  UserPoolName: AUTM07-HADES-COGNITO-USER-POOL-CALF-POC
+  UserPoolClientName: AUTM07-HADES-API-CLIENT-POC-CALF
+
+  ### EKS ###
+  namespace: $(project-name)
+  ruta: $(project-name)
+  elbtype: all
+  istio-injection: enabled
+
+  ### TAGS SEGURIDAD ###
+  tags-clas-info-seguridad-cid: "confidencialidad,integridad,disponibilidad"
+
+  ### CLOUDFORMATION ###
+  cloudformation-template: '$(System.DefaultWorkingDirectory)/template.yaml'
+  cloudformation-params: '$(System.DefaultWorkingDirectory)/params.json'
+
+stages:
+
+  - stage: linters
+    displayName: Validations
+    jobs:
+      - template: /Deployment/validations.yaml@Cloud_cld0002001_arq_despliegues_cloud
+
+  # DEV---------------------------------------------------------------------------------------------
+  - stage: code_scan_iac_dev
+    dependsOn: linters
+    displayName: Code Scan IaC DEV
+    condition: eq('${{ parameters.deploy_dev_main }}', 'true')
+    variables:
+      - group: 'nu0191001-calf-variables-aws-dev'
+    jobs:
+      - template: validations.yaml@Template_DevSecOps_IaC
+        parameters:
+          resources: [ 'main' ]
+
+  - stage: deploy_main_dev
+    displayName: deploy dev
+    dependsOn: [ code_scan_iac_dev, linters ]
+    condition: eq('${{ parameters.deploy_dev_main }}', 'true')
+    variables:
+      - name: stack-name
+        value: $(application-code)-$(project-name)-$(env)-stack
+      #Grupo de variables del proyecto por ambiente
+      - group: 'nu0191001-calf-variables-aws-dev'
+      - name: env
+        value: 'dev'
+    jobs:
+      - template: /Deployment/deployment.yaml@Cloud_cld0002001_arq_despliegues_cloud
+        parameters:
+          resource: main
+          account: bancolombia-ecosistemas-riesgos-dev-aws
+          env: dev
+          eks: true
+          getEKSInfo: true
+          deploy_ou: true
+          eksaccount: ecosistemas-de-riesgos-dev
+          getSubnets: true
+
+  # QA---------------------------------------------------------------------------------------------
+  - stage: code_scan_iac_qa
+    dependsOn: linters
+    displayName: Code Scan IaC QA
+    condition: eq('${{ parameters.deploy_qa_main }}', 'true')
+    variables:
+      - group: 'nu0191001-calf-variables-aws-qa'
+    jobs:
+      - template: validations.yaml@Template_DevSecOps_IaC
+        parameters:
+          resources: [ 'main' ]
+
+  - stage: deploy_main_qa
+    dependsOn: [ code_scan_iac_qa, linters ]
+    displayName: deploy qa
+    condition: eq('${{ parameters.deploy_qa_main }}', 'true')
+    variables:
+      - name: stack-name
+        value: $(application-code)-$(project-name)-$(env)-stack
+      #Grupo de variables del proyecto por ambiente
+      - group: 'nu0191001-calf-variables-aws-qa'
+      - name: env
+        value: 'qa'
+
+    jobs:
+      - template: /Deployment/deployment.yaml@Cloud_cld0002001_arq_despliegues_cloud
+        parameters:
+          resource: main
+          account: bancolombia-ecosistemas-riesgos-qa-aws
+          env: qa
+          eks: true
+          getEKSInfo: true
+          deploy_ou: true
+          eksaccount: ecosistemas-de-riesgos-qa
+          getSubnets: true
+
+##### PDN
+  - stage: code_scan_iac_pdn
+    dependsOn: linters
+    displayName: Code Scan IaC PDN
+    condition: eq('${{ parameters.deploy_pdn_main }}', 'true')
+    variables:
+      - group: 'nu0191001-calf-variables-aws-pdn'
+    jobs:
+      - template: validations.yaml@Template_DevSecOps_IaC
+        parameters:
+          resources: [ 'main' ]
+
+  - stage: deploy_main_pdn
+    dependsOn: [ code_scan_iac_pdn, linters ]
+    displayName: deploy pdn
+    condition: eq('${{ parameters.deploy_pdn_main }}', 'true')
+    variables:
+      - name: stack-name
+        value: $(application-code)-$(project-name)-$(env)-stack
+      #Grupo de variables del proyecto por ambiente
+      - group: 'nu0191001-calf-variables-aws-pdn'
+      - name: env
+        value: 'pdn'
+
+    jobs:
+      - template: /Deployment/deployment.yaml@Cloud_cld0002001_arq_despliegues_cloud
+        parameters:
+          resource: main
+          account: bancolombia-ecosistemas-riesgos-pdn-aws
+          env: pdn
+          eks: true
+          getEKSInfo: true
+          deploy_ou: true
+          eksaccount: ecosistemas-de-riesgos-pdn
+          getSubnets: true

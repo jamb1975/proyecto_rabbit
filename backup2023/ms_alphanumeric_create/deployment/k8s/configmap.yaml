@@ -1,0 +1,45 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: #{service}#-configmap
+  namespace: #{namespace}#
+data:
+  application.yaml: |-
+    server.port: 8080
+    spring.application.name: 'Alphanumeric_Password_Create'
+    spring.devtools.add-properties: false
+    spring.profiles.include: null
+    spring.profiles.active: #{env}#
+    logging.level.root: #{log-level}#
+    aws.region: #{secret-region}#
+    aws.cognito.appClientId: #{cognito-appclientid}#
+    aws.cognito.appClientSecret: #{cognito-appclientsecret}#
+    aws.cognito.userPoolId: #{cognito-user-poolid}#
+    aws.kms.keyId: #{kms-keyid}#
+    aws.kms.asymmetricAlias: #{kms-asymmetricAlias}#
+    aws.credentialsSecretName: #{credentialsSecretName}#
+    aws.postgresqlSecretName: #{postgresqlSecretName}#
+    aws.appSecretName: #{appSecretName}#
+    aws.kms.symmetricAlias: #{kms-symmetricAlias}#
+    aws.dynamodb.tableName.Management: #{dynamo-table-name-management}#
+    aws.dynamodb.tableName.Movement: #{dynamo-table-name-movement}#
+    aws.dynamodb.tableName.BlockedList: #{dynamo-table-name-blockedlist}#
+    app.suid.host: #{suid-host}#
+    app.params.host: #{params-host}#
+    app.suid.getIdentityPath: #{getIdentityPath}#
+    app.suid.getAlias: #{getAlias}#
+    app.params.getParametersPath: #{getParametersPath}#
+    app.params.getAllParametersPath: #{getAllParametersPath}#
+    app.backup.host: #{backup-host}#
+    app.backup.save: #{backup-save}#
+    spring.rabbitmq.host: #{rabbitmq-host}#
+    spring.rabbitmq.port: #{rabbitmq-port}#
+    spring.rabbitmq.username: #{rabbitmq-username}#
+    spring.rabbitmq.password: #{rabbitmq-password}#
+    spring.rabbitmq.virtualhost: #{rabbitmq-virtualhost}#
+    spring.rabbitmq.ssl.enabled: #{rabbitmq-ssl}#
+    queue.queue_create: #{queue-create}#
+    queue.queue_auth: #{queue-auth}#
+    adapter.sqs.region: #{adapter-sqs-region}#
+    adapter.sqs.queueUrl: #{adapter-sqs-queueUrl}#
+    adapter.sqs.endpoint: #{adapter-sqs-endpoint}#

@@ -1,0 +1,55 @@
+buildscript {
+    ext {
+        cleanArchitectureVersion = '2.4.3'
+        springBootVersion = '2.7.3'
+        springDependencyManagement = '1.0.12.RELEASE'
+        springCloudVersion = '2021.0.3'
+        sonarVersion = '3.3'
+        lombokVersion = '1.18.22'
+        springdocVersion = '1.6.+'
+        kms = '1.12.238'
+        secretsmanager = '1.12.238'
+        protocolCore = '2.17.209'
+        sts = '1.12.238'
+        gsonVersion = '2.9.0'
+        awscore = '1.12.238'
+        dynamodb = '1.12.238'
+    }
+}
+
+plugins {
+    id 'co.com.bancolombia.cleanArchitecture' version "${cleanArchitectureVersion}"
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'org.sonarqube' version "${sonarVersion}"
+    id 'jacoco'
+    id 'java'
+    id 'idea'
+}
+
+sonarqube {
+    def modules = subprojects.projectDir.collect { "${it.toString().replace(project.projectDir.toString() + "/", "")}" }
+    properties {
+        property "sonar.sourceEnconding", "UTF-8"
+        property "sonar.modules", "${modules.join(',')}"
+        property "sonar.sources", "src,deployment,settings.gradle,main.gradle,build.gradle,${modules.collect { "${it}/build.gradle" }.join(',')}"
+        property "sonar.test", "src/test"
+        property "sonar.java.binaries", ""
+        property "sonar.junit.reportsPath", ""
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+bootJar {
+    mainClass = 'co.com.bancolombia.AlphanumericCreateMain'
+}
+
+
+apply from: './main.gradle'

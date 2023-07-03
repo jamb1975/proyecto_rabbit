@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!-- saved from url=(0088)http://www.java2s.com/example/java-src/pkg/reactor/rabbitmq/requestreplytests-50753.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>reactor.rabbitmq.RequestReplyTests.java Source code</title><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><link rel="shortcut icon" href="http://www.java2s.com/style/favicon.ico"><link href="./reactor.rabbitmq.RequestReplyTests.java Source code_files/bootstrap.3.3.6.min.css" rel="stylesheet"><style>body {font-family: Georgia, 'Times New Roman', Times, serif;color: #333;font-size: 20px;}h1, .h1,h2, .h2,h3, .h3{font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;}p { line-height: 1.5em;margin: 10px 0 10px 0;}.r {color:#7f0055;font-weight:bold;}.q {color:#2a00ff;font-weight:bold;}.c {color:#3f7f5f;font-weight:bold;}</style><meta http-equiv="origin-trial" content="Az6AfRvI8mo7yiW5fLfj04W21t0ig6aMsGYpIqMTaX60H+b0DkO1uDr+7BrzMcimWzv/X7SXR8jI+uvbV0IJlwYAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A+USTya+tNvDPaxUgJooz+LaVk5hPoAxpLvSxjogX4Mk8awCTQ9iop6zJ9d5ldgU7WmHqBlnQB41LHHRFxoaBwoAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A7FovoGr67TUBYbnY+Z0IKoJbbmRmB8fCyirUGHavNDtD91CiGyHHSA2hDG9r9T3NjUKFi6egL3RbgTwhhcVDwUAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="Az6AfRvI8mo7yiW5fLfj04W21t0ig6aMsGYpIqMTaX60H+b0DkO1uDr+7BrzMcimWzv/X7SXR8jI+uvbV0IJlwYAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A+USTya+tNvDPaxUgJooz+LaVk5hPoAxpLvSxjogX4Mk8awCTQ9iop6zJ9d5ldgU7WmHqBlnQB41LHHRFxoaBwoAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A7FovoGr67TUBYbnY+Z0IKoJbbmRmB8fCyirUGHavNDtD91CiGyHHSA2hDG9r9T3NjUKFi6egL3RbgTwhhcVDwUAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="Az6AfRvI8mo7yiW5fLfj04W21t0ig6aMsGYpIqMTaX60H+b0DkO1uDr+7BrzMcimWzv/X7SXR8jI+uvbV0IJlwYAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A+USTya+tNvDPaxUgJooz+LaVk5hPoAxpLvSxjogX4Mk8awCTQ9iop6zJ9d5ldgU7WmHqBlnQB41LHHRFxoaBwoAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A7FovoGr67TUBYbnY+Z0IKoJbbmRmB8fCyirUGHavNDtD91CiGyHHSA2hDG9r9T3NjUKFi6egL3RbgTwhhcVDwUAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjgwNjUyNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><link rel="preload" href="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f.txt" as="script"><script type="text/javascript" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f.txt"></script><link rel="preload" href="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(1).txt" as="script"><script type="text/javascript" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(1).txt"></script></head><body><div class="container" style="height: auto !important;"><script src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(2).txt"></script><script src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(3).txt" id="google_shimpl"></script><script async="" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(4).txt"></script><!-- responsive -->
+<ins class="adsbygoogle" style="display: block; height: 280px;" data-ad-client="ca-pub-1130008796007602" data-ad-slot="7058793218" data-ad-format="auto" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_0_host" tabindex="0" title="Advertisement" aria-label="Advertisement" style="border: none; height: 280px; width: 1140px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: visible;"><iframe id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;border:0;width:1140px;height:280px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="1140" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/ads.html" data-google-container-id="a!1" data-google-query-id="COua9ov8__sCFa-GywEdNiEDjQ" data-load-complete="true"></iframe></div></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="row"><div class="col-lg-12 col-md-12"><div class="page-heading"><h1 style="word-wrap: break-word;margin-top: 30px;margin-bottom: 0;">reactor.rabbitmq.RequestReplyTests.java Source code</h1><p style="color: #999;margin-top: 0px;">Java tutorial</p><ol class="breadcrumb"><li><a href="http://www.java2s.com/">HOME</a></li><li><a href="http://www.java2s.com/example/java-api/java-api.html">Java</a></li><li>reactor.rabbitmq.RequestReplyTests.java</li></ol></div></div></div><div class="row" style="height: auto !important;"><div class="col-lg-12 col-md-12" style="height: auto !important; min-height: 0px !important;"><h2>Introduction</h2>Here is the source code for reactor.rabbitmq.RequestReplyTests.java<script async="" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(4).txt"></script><!-- responsive -->
+<ins class="adsbygoogle" style="display: block; height: 280px;" data-ad-client="ca-pub-1130008796007602" data-ad-slot="7058793218" data-ad-format="auto" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_1_host" tabindex="0" title="Advertisement" aria-label="Advertisement" style="border: none; height: 280px; width: 1140px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: visible;"><iframe id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;border:0;width:1140px;height:280px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="1140" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/ads(1).html" data-google-container-id="a!2" data-google-query-id="CNu4hoz8__sCFeYIwQodTzYKXg" data-load-complete="true"></iframe></div></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<h2>Source</h2><pre><span class="c">/*
+ * Copyright (c) 2018 Pivotal Software Inc, All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */</span>
+
+<span class="r">package</span> reactor.rabbitmq;
+
+<span class="r">import</span> com.rabbitmq.client.*;
+<span class="r">import</span> org.junit.jupiter.api.AfterAll;
+<span class="r">import</span> org.junit.jupiter.api.AfterEach;
+<span class="r">import</span> org.junit.jupiter.api.BeforeAll;
+<span class="r">import</span> org.junit.jupiter.api.BeforeEach;
+<span class="r">import</span> org.junit.jupiter.params.ParameterizedTest;
+<span class="r">import</span> org.junit.jupiter.params.provider.Arguments;
+<span class="r">import</span> org.junit.jupiter.params.provider.MethodSource;
+<span class="r">import</span> reactor.core.publisher.Mono;
+
+<span class="r">import</span> java.io.<b>IOException</b>;
+<span class="r">import</span> java.util.<b>Arrays</b>;
+<span class="r">import</span> java.util.<b>List</b>;
+<span class="r">import</span> java.util.<b>UUID</b>;
+<span class="r">import</span> java.util.concurrent.<b>CountDownLatch</b>;
+<span class="r">import</span> java.util.concurrent.<b>TimeUnit</b>;
+<span class="r">import</span> java.util.function.<b>Function</b>;
+<span class="r">import</span> java.util.stream.<b>IntStream</b>;
+<span class="r">import</span> java.util.stream.<b>Stream</b>;
+
+<span class="r">import</span> <span class="r">static</span> org.junit.jupiter.api.Assertions.assertEquals;
+<span class="r">import</span> <span class="r">static</span> org.junit.jupiter.api.Assertions.assertTrue;
+
+<span class="c">/**
+ *
+ */</span>
+<span class="r">public</span> <span class="r">class</span> RequestReplyTests {
+
+    <span class="r">static</span> <span class="r">final</span> <b>List</b>&lt;<b>String</b>&gt; QUEUES = <b>Arrays</b>.asList(<b>UUID</b>.randomUUID().toString(), <b>UUID</b>.randomUUID().toString());
+    <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connection-ebf5f.html"><b>Connection</b></a> serverConnection;
+    <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html"><b>Channel</b></a> serverChannel;
+    <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcserver-b7b41.html"><b>RpcServer</b></a> rpcServer;
+    Sender sender;
+
+<span id="2640ba2556cc0a39ee51c9e1a40d0175"></span>    <span class="r">public</span> <span class="r">static</span> <b>Stream</b>&lt;Arguments&gt; requestReplyParameters() {
+        <span class="r">return</span> <b>Stream</b>.of(
+                Arguments.of(QUEUES.get(0),
+                        (<b>Function</b>&lt;Sender, <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcclient-91346.html"><b>RpcClient</b></a>&gt;) sender -&gt; sender.rpcClient(<span class="q">""</span>, QUEUES.get(0))),
+                Arguments.of(QUEUES.get(1), (<b>Function</b>&lt;Sender, <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcclient-91346.html"><b>RpcClient</b></a>&gt;) sender -&gt; sender.rpcClient(<span class="q">""</span>,
+                        QUEUES.get(1), () -&gt; <b>UUID</b>.randomUUID().toString())));
+    }
+
+<span id="88b85b8cd6ebb1841351a6aed94c1596"></span>    @BeforeAll
+    <span class="r">public</span> <span class="r">static</span> <span class="r">void</span> initAll() <span class="r">throws</span> <b>Exception</b> {
+        <span class="r">try</span> (<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connection-ebf5f.html"><b>Connection</b></a> c = <span class="r">new</span> <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html"><b>ConnectionFactory</b></a>().newConnection()) {
+            <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html"><b>Channel</b></a> ch = c.createChannel();
+            <span class="r">for</span> (<b>String</b> queue : QUEUES) {
+                ch.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html#3316289f0264b612b8582d539c46b959"><b>queueDeclare</b></a>(queue, false, false, false, null);
+            }
+        }
+    }
+
+<span id="6f74465babf3f66d0a7b4d818d34137f"></span>    @AfterAll
+    <span class="r">public</span> <span class="r">static</span> <span class="r">void</span> tearDownAll() <span class="r">throws</span> <b>Exception</b> {
+        <span class="r">try</span> (<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connection-ebf5f.html"><b>Connection</b></a> c = <span class="r">new</span> <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html"><b>ConnectionFactory</b></a>().newConnection()) {
+            <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html"><b>Channel</b></a> ch = c.createChannel();
+            <span class="r">for</span> (<b>String</b> queue : QUEUES) {
+                ch.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html#35066c2472cf3ccff4b357d5b0149c62"><b>queueDelete</b></a>(queue);
+            }
+        }
+    }
+
+<span id="b4d3bf3e2dce6aa7415acd266b4cf6aa"></span>    @BeforeEach
+    <span class="r">public</span> <span class="r">void</span> init() <span class="r">throws</span> <b>Exception</b> {
+        <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html"><b>ConnectionFactory</b></a> connectionFactory = <span class="r">new</span> <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html"><b>ConnectionFactory</b></a>();
+        connectionFactory.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html#32545cb8268aefef7c9ce21cdaa9032d"><b>useNio</b></a>();
+        serverConnection = connectionFactory.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connectionfactory-b000f.html#f751c12e9c2d666609485aaf43710f35"><b>newConnection</b></a>();
+        serverChannel = serverConnection.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/connection-ebf5f.html#0493fe6a77f9c19a5aff844e145f70f1"><b>createChannel</b></a>();
+
+    }
+
+<span id="d37eb62bbb1edbeacfd4443543e3366c"></span>    @AfterEach
+    <span class="r">public</span> <span class="r">void</span> tearDown() <span class="r">throws</span> <b>Exception</b> {
+        <span class="r">if</span> (rpcServer != null) {
+            rpcServer.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcserver-b7b41.html#636a3b3cfd1137a69c6dc9d4e954ea78"><b>terminateMainloop</b></a>();
+        }
+        <span class="r">if</span> (sender != null) {
+            sender.close();
+        }
+    }
+
+<span id="82f0b12b8876a5448ebcd172df2a5e6b"></span>    @ParameterizedTest
+    @MethodSource(<span class="q">"requestReplyParameters"</span>)
+    <span class="r">public</span> <span class="r">void</span> requestReply(<b>String</b> queue, <b>Function</b>&lt;Sender, <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcclient-91346.html"><b>RpcClient</b></a>&gt; rpcClientCreator) <span class="r">throws</span> <b>Exception</b> {
+        rpcServer = <span class="r">new</span> TestRpcServer(serverChannel, queue);
+        <span class="r">new</span> <b>Thread</b>(() -&gt; {
+            <span class="r">try</span> {
+                rpcServer.<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcserver-b7b41.html#20aaa999eada62a9168ffc0e99b2c50a"><b>mainloop</b></a>();
+            } <span class="r">catch</span> (<b>Exception</b> e) {
+                <span class="c">// safe to ignore when loops ends/server is canceled</span>
+            }
+        }).start();
+
+        sender = RabbitFlux.createSender();
+
+        <span class="r">int</span> nbRequests = 10;
+        <b>CountDownLatch</b> latch = <span class="r">new</span> <b>CountDownLatch</b>(nbRequests);
+        <span class="r">try</span> (<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcclient-91346.html"><b>RpcClient</b></a> rpcClient = rpcClientCreator.apply(sender)) {
+            <b>IntStream</b>.range(0, nbRequests).forEach(i -&gt; {
+                <b>String</b> content = <span class="q">"hello "</span> + i;
+                Mono&lt;<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/delivery-82ed0.html"><b>Delivery</b></a>&gt; deliveryMono = rpcClient
+                        .rpc(Mono.just(<span class="r">new</span> <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcclient-91346.html"><b>RpcClient.RpcRequest</b></a>(content.getBytes())));
+                <b>String</b> received = <span class="r">new</span> <b>String</b>(deliveryMono.block().getBody());
+                assertEquals(<span class="q">"*** "</span> + content + <span class="q">" ***"</span>, received);
+                latch.countDown();
+            });
+            assertTrue(latch.await(5, <b>TimeUnit</b>.SECONDS), <span class="q">"All requests should have dealt with by now"</span>);
+        }
+
+    }
+
+    <span class="r">private</span> <span class="r">static</span> <span class="r">class</span> TestRpcServer <span class="r">extends</span> <a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/rpcserver-b7b41.html"><b>RpcServer</b></a> {
+
+        <span class="r">public</span> TestRpcServer(<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/channel-962d4.html"><b>Channel</b></a> channel, <b>String</b> queueName) <span class="r">throws</span> <b>IOException</b> {
+            <span class="r">super</span>(channel, queueName);
+        }
+
+        @<b>Override</b>
+        <span class="r">public</span> <span class="r">byte</span>[] handleCall(<a href="http://www.java2s.com/example/java-src/pkg/com/rabbitmq/client/delivery-82ed0.html"><b>Delivery</b></a> request, AMQP.BasicProperties replyProperties) {
+            <b>String</b> input = <span class="r">new</span> <b>String</b>(request.getBody());
+            <span class="r">return</span> (<span class="q">"*** "</span> + input + <span class="q">" ***"</span>).getBytes();
+        }
+    }
+}
+</pre><br><script async="" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/f(4).txt"></script><!-- responsive -->
+<ins class="adsbygoogle" style="display: block; height: 0px;" data-ad-client="ca-pub-1130008796007602" data-ad-slot="7058793218" data-ad-format="auto" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_2_host" tabindex="0" title="Advertisement" aria-label="Advertisement" style="border: none; height: 0px; width: 1140px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: hidden; opacity: 0;"><iframe id="aswift_2" name="aswift_2" style="left: 0px; position: absolute; top: 0px; border: 0px; width: 1140px; height: 0px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="1140" height="0" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/ads(2).html" data-google-container-id="a!3" data-google-query-id="CJCdiIz8__sCFQmBywEdlqEGDw" data-load-complete="true"></iframe></div></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div></div><!--/row--></div><!--/container--><hr><footer><div class="container"><div class="row"><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><p style="font-size:14px"><a href="http://www.java2s.com/">HOME</a> | Copyright © www.java2s.com 2016 </p></div></div></div></footer><script src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/jquery-1.12.3.min.js.descarga"></script><script src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/bootstrap.3.3.6.min.js.descarga"></script><script>$(function(){$('[data-toggle="popover"]').popover()})</script>
+<ins class="adsbygoogle adsbygoogle-noablate" data-adsbygoogle-status="done" style="display: none !important;" data-ad-status="unfilled"><div id="aswift_3_host" tabindex="0" title="Advertisement" aria-label="Advertisement" style="border: none; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_3" name="aswift_3" style="left:0;position:absolute;top:0;border:0;width:undefinedpx;height:undefinedpx;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/ads(3).html" data-google-container-id="a!4" data-load-complete="true"></iframe></div></ins><iframe src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/aframe.html" width="0" height="0" style="display: none;"></iframe></body><iframe id="google_esf" name="google_esf" src="./reactor.rabbitmq.RequestReplyTests.java Source code_files/zrt_lookup.html" style="display: none;"></iframe></html>

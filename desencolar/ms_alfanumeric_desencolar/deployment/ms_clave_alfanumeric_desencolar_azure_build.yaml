@@ -1,0 +1,121 @@
+name: $(Build.SourceBranchName).$(date:yyyyMMdd)$(rev:.r)
+# Set variables once
+
+variables:
+  - group: 'devsecops_engine'
+  - name: 'Repository.NameArtifactory'
+    value: 'build-NU0191001_ms_alfanumeric_desencolar' #cambiar nombre
+  - name: 'projectName'
+    value: 'AlphanumericPassword_Desencolar'
+  - name: 'artifactName'
+    value: 'AlphanumericPassword_Desencolar'
+  - name: 'componentName'
+    value: 'ms_alfanumeric_desencolar' #hace referencia al nombre del folder
+  - name: 'NU'
+    value: 'NU0191001_Clave_Alfanumerica_Upgrade_MR'
+  - name: "directoryPath"
+    value: "ms_alfanumeric_desencolar"
+
+resources:
+  - repo: self
+
+trigger:
+  branches:
+    include:
+      - trunk
+#      - feature/*
+  paths:
+    include:
+      - ms_alphanumeric_desencolar/*
+
+jobs:
+  - job: CompilacionPublicacionArtefactoJob
+    displayName: 'Compilación y Publicación Artefacto'
+    pool:
+      name: Build
+      demands:
+        - java
+    #        - Agent.OS -equals Windows_NT
+
+    steps:
+      - task: SonarQubePrepare@5
+        displayName: 'Prepare analysis on SonarQube'
+        inputs:
+          SonarQube: SonarQube
+          scannerMode: Other
+          extraProperties: |
+            sonar.projectKey=$(Build.Repository.Name)_$(componentName)
+            sonar.projectName=$(Build.Repository.Name)_$(componentName)
+            sonar.projectVersion=$(Build.BuildNumber)
+       
+
+      - task: Gradle@2
+        displayName: 'Gradle build and test'
+        inputs:
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(componentName)'
+          gradleWrapperFile: '$(System.DefaultWorkingDirectory)/$(componentName)/gradlew'
+          tasks: 'clean build jacocoMergedReport'
+          publishJUnitResults: true
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/$(componentName)/**/TEST-*.xml'
+          sqGradlePluginVersionChoice: "build"
+          sonarQubeRunAnalysis: true
+        env:
+          JAVA_HOME: $(JAVA_HOME_11_X64)
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results **/TEST-*.xml'
+
+      - task: SonarSource.sonarqube.6D01813A-9589-4B15-8491-8164AEB38055.SonarQubeAnalyze@4
+        displayName: 'Run Code Analysis'
+
+      - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
+        displayName: 'Publish Quality Gate Result'
+
+      - task: SimondeLang.sonar-buildbreaker.sonar-buildbreaker.sonar-buildbreaker@8
+        displayName: 'Break build on quality gate failure'
+        inputs:
+          SonarQube: SonarQube
+
+
+
+
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/applications/app-service/build/libs/"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Dockerfile"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/deployment/Dockerfile"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Kubernetes"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/deployment/k8s"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+          #      - task: PublishBuildArtifacts@1
+          #        displayName: "Publish Tests"
+          #        inputs:
+          #          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/tests"
+          #          componentName: "tests"
+          #          publishLocation: "Container"
+          #          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Performance"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/performance"
+          componentName: "Performance"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))

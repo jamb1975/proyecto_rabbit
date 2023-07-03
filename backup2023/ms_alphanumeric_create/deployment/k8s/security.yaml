@@ -1,0 +1,22 @@
+####################   Authorization Policy ###################################
+### Habilita el control de acceso a los servicios que cumplen las condiciones sin validacion de JWT #
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: jwt-validator-policy-create-poc
+  namespace: #{namespace}#
+spec:
+  selector:
+    matchLabels:
+      app: #{project-name}#
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            requestPrincipals: [ "*" ]
+      when:
+        - key: request.auth.claims[scope]
+          values: [ "#{service}#","#{service}#-pod" ]
+    - to:
+        - operation:
+            paths: [ "/api/create-alphanumeric-password/*", "/clave-alfanumerica/api/create-alphanumeric-password/", "/clave-alfanumerica/api/create-alphanumeric-password/*", "clave-alfanumerica/api/create-alphanumeric-password/", "api/create-alphanumeric-password/" ]

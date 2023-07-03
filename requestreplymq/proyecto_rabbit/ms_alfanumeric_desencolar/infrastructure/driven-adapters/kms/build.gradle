@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':model')
+    implementation project(':utility')
+    implementation 'software.amazon.awssdk:kms'
+    implementation "com.amazonaws:aws-java-sdk-kms:${kms}"
+    implementation "software.amazon.awssdk:protocol-core:${protocolCore}"
+    implementation 'com.amazonaws:aws-encryption-sdk-java:2.4.0'
+
+}

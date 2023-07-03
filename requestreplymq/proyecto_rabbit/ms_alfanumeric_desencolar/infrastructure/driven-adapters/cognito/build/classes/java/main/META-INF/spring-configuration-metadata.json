@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "aws.cognito",
+      "type": "co.com.bancolombia.cognito.properties.CognitoBaseProperties",
+      "sourceType": "co.com.bancolombia.cognito.properties.CognitoBaseProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "aws.cognito.app-client-id",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.cognito.properties.CognitoBaseProperties"
+    },
+    {
+      "name": "aws.cognito.app-client-secret",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.cognito.properties.CognitoBaseProperties"
+    },
+    {
+      "name": "aws.cognito.user-pool-id",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.cognito.properties.CognitoBaseProperties"
+    }
+  ],
+  "hints": []
+}

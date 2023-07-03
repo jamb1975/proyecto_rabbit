@@ -1,0 +1,81 @@
+##Spring Configuration
+server:
+  port: 8086
+  servlet:
+    context-path: /api/create-alphanumeric-password
+spring:
+  rabbitmq:
+    host: "0.0.0.0"
+    port: 5673
+    username: "jaamurci"
+    password: "JAmbg172"
+    virtualhost: "/"
+    ssl:
+      enabled: false
+queue:
+  queue_create: queue_calf_create
+  queue_auth: queue_calf_auth
+  queue_update: queue_calf_update
+cognito:
+  timewait: 500
+  reintentos: 3
+  application:
+    name: poc-alphanumeric-key
+  main:
+    web-application-type: reactive
+  sleuth:
+    propagation:
+      type: aws
+    reactor:
+      instrumentation-type: decorate_queues
+  webflux:
+    base-path: /api/create-alphanumeric-password
+aws:
+  credentialsSecretName: nu0191001-clave-alfanumerica-dev-secret
+  region: us-east-1
+  session:
+    credentials:
+      accessKey: "ASIA5MK4RYC36TN37X42"
+      secretKey: "O8cDKDYfMZRPhBzsIDkl0dGzzCf5DeHLS/RCQfuv"
+      sessionToken: "IQoJb3JpZ2luX2VjELX//////////wEaCXVzLWVhc3QtMSJGMEQCIHcdOu4r1NDmcdUrTqd345kWmiS7tQq4SADFcZqTtVIsAiAvmMqyoGxbBV/hlYZTeHPRG6B9O/Jx8EQTbwd2chC9wiqfAwhOEAMaDDkxOTg1Mzk3MzY4NyIMu7qos2p7Z+k6uKBOKvwCe7ziO5xs4AJ3gxqzTu8wF53d0g1VY1Oj9Mj1yuqSkv/EAIgzPeHJDfOwRDssAJ27yL4IkCglmkjEcY2oP5BS18FQjOb6q2jh3UdiCAlftDkuc5pM+gDaRMhW2tJM73Q4OODCn/2YF6/5cku8dKoufKWRgRWwtTKOSo8EHhCjS8sYY5+cvIX0f2phiuzySIJAZl0NZXLu0cAxFWDtCBqkN8cxbH8loXgATQyj7p1OL349hLRnGh9Hrx8Y7uhYABG1KaGYvTv6BHUUF+NNK+U6DgjsizWU4vxBMyWIpCNbjFEjFMp0d7kkdrW2d0BCVYf6DqY09xUoQSIrnf1B4YHZrKcAO3wI3Pv9OwJxIlyv6jAqpuwIsqmw3OPWLYBJQoUIm8+ToZxqOc0F4NWHzPLZ7I8tFHRcR9ZPxLH7c3ZLQknnTTVr0hgJFvW9KVtj8m2vTsq11s5/sRNDOIb10uHhzwbLpBiVJTAuUdt89f+/xgxI/roSUXEThbVn4h8w7cvumAY6pwFKQ74Pk65wMuuJDPLBQdRQi1/0slD2Ppc1gJ4MKZm2T+grApDcpnvm/c76m76BJDCY73EeAa4Qd08UQ7NMOhTGYvz47AspMSfb9fbbWxvw7K2YOihiz6Fu+cXKRQv7Gh2HJ/cX8uv/HsRn4QeRFP1jEmvVoxyw4jOwLRp81tqses05vqJDPrLp/lsZHhTHLuKZCMie0E7iMS88+3C/yuK9C1S/DBRS0A=="
+  cognito:
+    appClientId: 6ggiri7mljsr9snirs11gojodf
+    appClientSecret: 18253gag5899oibibr0i2dja9oumuuiv3t53su6og9use8rk48pa
+    userPoolId: us-east-1_51FqigTv7
+  kms:
+    asymmetricAlias: "nu0191001/clave-alfanumerica/poc"
+  dynamodb:
+    endpoint: "dynamodb.us-east-1.amazonaws.com"
+    tableName:
+      Management: "clavealfanumerica-dev-cryptomanagement"
+      Movement: "clavealfanumerica-dev-cryptomovement"
+    threads: "10"
+  sqs:
+    region: "us-east-1"
+    queueName: "CALF_create_backup_queue"
+management:
+  health:
+    probes:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessstate, cacheCheck, livenessStateProbeIndicator,diskSpace,refreshScope
+        exploratory:
+          include: livenessState, readinessState,ping
+          show-details: always
+        readiness:
+          include: readinessStateProbeIndicator
+adapter:
+  sqs:
+    region: "us-east-1"
+    queueUrl: "https://sqs.us-east-1.amazonaws.com/868673078264/CALF_create_backup_queue"
+    endpoint: "https://sqs.us-east-1.amazonaws.com"

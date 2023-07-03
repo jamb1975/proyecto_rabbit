@@ -1,0 +1,103 @@
+server:
+  port: 8080
+  servlet:
+    context-path: "/api/create-alphanumeric-password"
+spring:
+  application:
+    name: "poc-alphanumeric-key"
+  main:
+    web-application-type: "reactive"
+  sleuth:
+    propagation:
+      type: "aws"
+    reactor:
+      instrumentation-type: "decorate_queues"
+  webflux:
+    base-path: "/api/create-alphanumeric-password"
+  profiles:
+    active: "${SPRING_PROFILE_ACTIVE:local}"
+  rabbitmq:
+    host: "${RABBIT_MQ_HOST}"
+    port: "${RABBIT_MQ_PORT}"
+    username: "${RABBIT_MQ_USERNAME}"
+    password: "${RABBIT_MQ_PASSWORD}"
+    virtualhost: "${RABBIT_MQ_VIRTUALHOST}"
+    ssl:
+      enabled: true
+aws:
+  region: ${AWS_REGION}
+  cognito:
+    appClientId: "${APP_CLIENT_ID}"
+    appClientSecret: "${APP_CLIENT_SECRET}"
+    userPoolId: "${USER_POOL_ID}"
+  kms:
+    keyId: "${KMS_KEY_ID}"
+    asymmetricAlias: "${KMS_KEY_ALIAS}"
+  dynamodb:
+    endpoint: "dynamodb.us-east-1.amazonaws.com"
+    tableName:
+      Management: "clavealfanumerica-dev-cryptomanagement"
+      Movement: "clavealfanumerica-dev-cryptomovement"
+    threads: "10"
+  sqs:
+    region: ${SQS_QUEUE_CREATE_BACKUP_REGION}
+    queueName: ${SQS_QUEUE_CREATE_BACKUP_NAME}
+    visibilityTimeoutSeconds: ${SQS_QUEUE_CREATE_BACKUP_VISIBILITY_TIMEOUT}
+management:
+  health:
+    probes:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      show-details: "always"
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: "livenessstate, cacheCheck, livenessStateProbeIndicator,diskSpace,refreshScope"
+        exploratory:
+          include: "livenessState, readinessState,ping"
+          show-details: "always"
+        readiness:
+          include: "readinessStateProbeIndicator"
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+    web:
+      exposure:
+        include: "*"
+commons:
+  jms:
+    output-concurrency: 10
+    output-queue: "DEV.QUEUE.1"
+    producer-ttl: 0
+    reactive: false
+ibm:
+  mq:
+    channel: "DEV.APP.SVRCONN"
+    user: "app"
+queue:
+  queue_create: "${RABBIT_MQ_QUEUE_CREATE}"
+  queue_auth: "${RABBIT_MQ_QUEUE_AUTH}"
+app:
+  backup:
+    host: "http://localhost:8082"
+    save: "/api/backup-cognito/create-backup"
+  params:
+    host: "http://localhost:8089"
+    getParametersPath: "/clave-alfanumerica/api/parameters"
+    getAllParametersPath: "/api/parameters/all"
+  suid:
+    host: "https://ecosistemariesgos-qa.apps.ambientesbc.lab"
+    getIdentityPath: "/suid/api/identification/identity/getIdentity"
+    getAlias: "/suid/alias/getAlias"
+adapter:
+  sqs:
+    region: "${ADAPTER-SQS-REGION}"
+    queueUrl: "${ADAPTER-SQS-QUEUEURL}"
+    endpoint: "${ADAPTER-SQS-ENDPPOINT}"

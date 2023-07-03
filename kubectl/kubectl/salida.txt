@@ -1,0 +1,165 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.2)
+
+2023-01-31 08:25:36.035  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.AlphaNumericDesencolarMain         : Starting AlphaNumericDesencolarMain using Java 11.0.18 on alphanumeric-password-desencolar-deployment-699b49b7d4-qxzjb with PID 1 (/home/appuser/app.jar started by appuser in /home/appuser)
+2023-01-31 08:25:36.039  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.AlphaNumericDesencolarMain         : The following 1 profile is active: "dev"
+2023-01-31 08:25:36.335  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-01-31 08:25:45.428  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] faultConfiguringBeanFactoryPostProcessor : No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2023-01-31 08:25:45.537  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] faultConfiguringBeanFactoryPostProcessor : No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2023-01-31 08:25:46.331  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=c8892c79-ac12-3a3f-8e59-6f1ae8ffb6fe
+2023-01-31 08:25:48.416  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.integration.config.IntegrationManagementConfiguration' of type [org.springframework.integration.config.IntegrationManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2023-01-31 08:25:48.438  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'integrationChannelResolver' of type [org.springframework.integration.support.channel.BeanFactoryChannelResolver] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2023-01-31 08:25:52.731  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : Host->b-d05f4718-7e6e-4bac-9e3e-883e0b2edc03.mq.us-east-1.amazonaws.com
+2023-01-31 08:25:52.734  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : Port->5671
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : Username->clave-alfanumerica-dev-admin-mq
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : Password->mcz-calf-2354-dev-1703-20
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : VirtualHost->/
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : VirtualHost->true
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : queue_create->queue_calf_create
+2023-01-31 08:25:52.735  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] c.c.b.rabbitmqadapter.RabbitMqAdapter    : queue_auth->queue_calf_auth
+2023-01-31 08:25:52.819  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [b-d05f4718-7e6e-4bac-9e3e-883e0b2edc03.mq.us-east-1.amazonaws.com:5671]
+2023-01-31 08:25:54.231  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#5226e402:0/SimpleConnection@3047254d [delegate=amqp://clave-alfanumerica-dev-admin-mq@10.104.11.90:5671/, localPort= 53160]
+2023-01-31 08:25:57.725  WARN [Alphanumeric_Password_Desencolar,,] 1 --- [           main] onfigReactiveWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'alphaNumericDesencolarMain': Unsatisfied dependency expressed through field 'useRegisterUseCase'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'useRegisterUseCase' defined in class path resource [co/com/bancolombia/config/UseCasesConfig.class]: Unsatisfied dependency expressed through method 'useRegisterUseCase' parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'rabbitMqAdapter': Unsatisfied dependency expressed through field 'rpcServerAuth'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rpcServerAuth' defined in class path resource [co/com/bancolombia/rabbitmqadapter/config/RabbitMqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+2023-01-31 08:25:57.732  WARN [Alphanumeric_Password_Desencolar,,] 1 --- [           main] .s.c.a.CommonAnnotationBeanPostProcessor : Destroy method on bean with name 'rabbitMqConfig' threw an exception: reactor.core.Exceptions$ReactiveException: java.io.IOException
+2023-01-31 08:25:57.921  INFO [Alphanumeric_Password_Desencolar,,] 1 --- [           main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-01-31 08:25:58.116 ERROR [Alphanumeric_Password_Desencolar,,] 1 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'alphaNumericDesencolarMain': Unsatisfied dependency expressed through field 'useRegisterUseCase'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'useRegisterUseCase' defined in class path resource [co/com/bancolombia/config/UseCasesConfig.class]: Unsatisfied dependency expressed through method 'useRegisterUseCase' parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'rabbitMqAdapter': Unsatisfied dependency expressed through field 'rpcServerAuth'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rpcServerAuth' defined in class path resource [co/com/bancolombia/rabbitmqadapter/config/RabbitMqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:659) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:639) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.22.jar!/:5.3.22]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.22.jar!/:5.3.22]
+	at org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContext.refresh(ReactiveWebServerApplicationContext.java:66) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.2.jar!/:2.7.2]
+	at co.com.bancolombia.AlphaNumericDesencolarMain.main(AlphaNumericDesencolarMain.java:19) ~[classes!/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:49) ~[app.jar:na]
+	at org.springframework.boot.loader.Launcher.launch(Launcher.java:108) ~[app.jar:na]
+	at org.springframework.boot.loader.Launcher.launch(Launcher.java:58) ~[app.jar:na]
+	at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:65) ~[app.jar:na]
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'useRegisterUseCase' defined in class path resource [co/com/bancolombia/config/UseCasesConfig.class]: Unsatisfied dependency expressed through method 'useRegisterUseCase' parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'rabbitMqAdapter': Unsatisfied dependency expressed through field 'rpcServerAuth'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rpcServerAuth' defined in class path resource [co/com/bancolombia/rabbitmqadapter/config/RabbitMqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:800) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:541) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:656) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	... 28 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'rabbitMqAdapter': Unsatisfied dependency expressed through field 'rpcServerAuth'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rpcServerAuth' defined in class path resource [co/com/bancolombia/rabbitmqadapter/config/RabbitMqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:659) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:639) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:887) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	... 41 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rpcServerAuth' defined in class path resource [co/com/bancolombia/rabbitmqadapter/config/RabbitMqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:656) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	... 56 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [co.com.bancolombia.rabbitmqadapter.CalfRpcServerAuth]: Factory method 'rpcServerAuth' threw exception; nested exception is reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	... 69 common frames omitted
+Caused by: reactor.core.Exceptions$ReactiveException: java.io.IOException
+	at reactor.core.Exceptions.propagate(Exceptions.java:392) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at reactor.core.publisher.BlockingSingleSubscriber.blockingGet(BlockingSingleSubscriber.java:97) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at reactor.core.publisher.Mono.block(Mono.java:1707) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig.rpcServerAuth(RabbitMqConfig.java:67) ~[rabbitmqadapter-plain.jar!/:na]
+	at co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig$$EnhancerBySpringCGLIB$$4206d32f.CGLIB$rpcServerAuth$1(<generated>) ~[rabbitmqadapter-plain.jar!/:na]
+	at co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig$$EnhancerBySpringCGLIB$$4206d32f$$FastClassBySpringCGLIB$$489c9223.invoke(<generated>) ~[rabbitmqadapter-plain.jar!/:na]
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244) ~[spring-core-5.3.22.jar!/:5.3.22]
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331) ~[spring-context-5.3.22.jar!/:5.3.22]
+	at co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig$$EnhancerBySpringCGLIB$$4206d32f.rpcServerAuth(<generated>) ~[rabbitmqadapter-plain.jar!/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.22.jar!/:5.3.22]
+	... 70 common frames omitted
+	Suppressed: java.lang.Exception: #block terminated with an error
+		at reactor.core.publisher.BlockingSingleSubscriber.blockingGet(BlockingSingleSubscriber.java:99) ~[reactor-core-3.4.21.jar!/:3.4.21]
+		... 82 common frames omitted
+Caused by: java.io.IOException: null
+	at com.rabbitmq.client.impl.AMQChannel.wrap(AMQChannel.java:129) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.AMQChannel.wrap(AMQChannel.java:125) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.AMQConnection.start(AMQConnection.java:396) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.recovery.RecoveryAwareAMQConnectionFactory.newConnection(RecoveryAwareAMQConnectionFactory.java:65) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.recovery.AutorecoveringConnection.init(AutorecoveringConnection.java:160) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.ConnectionFactory.newConnection(ConnectionFactory.java:1216) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.ConnectionFactory.newConnection(ConnectionFactory.java:1173) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.ConnectionFactory.newConnection(ConnectionFactory.java:1310) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig.lambda$connectionMono$0(RabbitMqConfig.java:47) ~[rabbitmqadapter-plain.jar!/:na]
+	at reactor.core.publisher.MonoCallable.subscribe(MonoCallable.java:57) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at reactor.core.publisher.MonoCacheTime.subscribeOrReturn(MonoCacheTime.java:143) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at reactor.core.publisher.Mono.subscribe(Mono.java:4382) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	at reactor.core.publisher.Mono.block(Mono.java:1706) ~[reactor-core-3.4.21.jar!/:3.4.21]
+	... 81 common frames omitted
+Caused by: com.rabbitmq.client.ShutdownSignalException: connection error
+	at com.rabbitmq.utility.ValueOrException.getValue(ValueOrException.java:66) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.utility.BlockingValueOrException.uninterruptibleGetValue(BlockingValueOrException.java:36) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.AMQChannel$BlockingRpcContinuation.getReply(AMQChannel.java:502) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.AMQConnection.start(AMQConnection.java:326) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	... 91 common frames omitted
+Caused by: java.io.EOFException: null
+	at java.base/java.io.DataInputStream.readUnsignedByte(Unknown Source) ~[na:na]
+	at com.rabbitmq.client.impl.Frame.readFrom(Frame.java:91) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.SocketFrameHandler.readFrame(SocketFrameHandler.java:184) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at com.rabbitmq.client.impl.AMQConnection$MainLoop.run(AMQConnection.java:665) ~[amqp-client-5.14.2.jar!/:5.14.2]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+

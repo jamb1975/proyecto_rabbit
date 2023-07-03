@@ -1,0 +1,49 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+	//implementation 'com.github.bancolombia:aws-secrets-manager-async:3.1.0'
+	implementation project( ':kms')
+	implementation project( ':metrics')
+	implementation project( ':rest-consumer')
+	implementation project( ':reactive-web')
+	implementation project( ':rabbitmqadapter')
+    implementation project(':usecase')
+    implementation project(':utility')
+    implementation project(':cognito')
+    implementation project(':model')
+
+    //implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'software.amazon.awssdk:secretsmanager'
+    implementation 'software.amazon.awssdk:kms'
+    implementation "org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+    implementation "com.amazonaws:aws-java-sdk-sts:${sts}"
+    implementation "com.amazonaws:aws-java-sdk-secretsmanager:${secretsmanager}"
+    implementation "software.amazon.awssdk:cloudwatchevents"
+    implementation "software.amazon.awssdk:cloudwatch"
+    implementation "software.amazon.awssdk:cloudwatchlogs"
+    implementation group: 'io.projectreactor.rabbitmq', name: 'reactor-rabbitmq', version: '1.5.5'
+    implementation group: 'org.springframework.boot',name: 'spring-boot-starter-amqp'
+
+
+}
+
+task explodedJar(type: Copy) {
+    with jar
+    into "${buildDir}/exploded"
+}
+
+jar {
+    // To disable the *-plain.jar
+    enabled = false
+}
+
+configurations {
+    compile.exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+}
+
+bootJar {
+    // Sets output jar name
+    archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
+}

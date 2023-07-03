@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':utility')
+    implementation 'software.amazon.awssdk:cognitoidentity'
+    implementation 'software.amazon.awssdk:cognitoidentityprovider'
+    implementation "com.amazonaws:aws-java-sdk-kms:${kms}"
+    implementation 'com.amazonaws:aws-java-sdk-cognitoidp:1.11.6'
+    implementation 'software.amazon.awssdk:sts'
+
+
+}

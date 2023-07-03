@@ -1,0 +1,72 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: "ms_clave_alfanumerica_desencolar"
+  main:
+    web-application-type: "reactive"
+
+  sleuth:
+    propagation:
+      type: "aws"
+    reactor:
+      instrumentation-type: "decorate_queues"
+
+  devtools:
+    add-properties: false
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
+  rabbitmq:
+    host: "0.0.0.0"
+    port: 5673
+    username: "jaamurci"
+    password: "JAmbg172"
+    virtualhost: "/"
+queue:
+  queue_create: queue_calf_create
+  queue_auth: queue_calf_auth
+  queue_update: queue_calf_update
+cognito:
+  timewait: 500
+  reintentos: 3
+
+
+aws:
+  credentialsSecretName: nu0191001-clave-alfanumerica-dev-secret
+  session:
+    credentials:
+      accessKey: ASIA5MK4RYC3U4OONG5R
+      secretKey: MqBdgyDE2lf1ySw0fw/yRcFFaxqccc2dB+xhANwc
+      sessionToken: IQoJb3JpZ2luX2VjEL3//////////wEaCXVzLWVhc3QtMSJGMEQCIAErU8phjy5/gQGoizkxaYWB3lwmDWUhU5xkWoh57fWyAiAgg7ZloFMQ9PQ0XJrytu2cQi0o9DdByvBE5tIrofghLiqdAwjm//////////8BEAMaDDkxOTg1Mzk3MzY4NyIMpcRiOzvLEWo23hUmKvECEzPf/CvybZ2+f4EugipBgw3m1G88Xd95lEQA3M+WNK+XnZ1uC8QkGMvxCwUopGBoleR3xNZabHBwNpinq/kpcjp1KWAElNJ0YjjaW1GGxZBUjWdG44cEypie3Jz3yWfCvizvYXSLG5vavZTV3Z+Y/HM6PqLuHOhklU4nKsWEY0SGDGZytHJ/LoNW5nX83pvAaFhQPgVZE0nCrPxr0rBewblRcxHwQ7s02/XZTBkr/nd5FpiQcdFUq15Do7+SPPjHT1Vj2RQN+/CyP9TdwdPOXVH40QCQUUG0HOxhuzMOuFKlo96cJbrlqL50y2nBE/7ztkru1vo/FhN//Ubw/ouASuNunRA1EaWhCEUzXvh3gGsfHoKR4P3qbWmR/O/lsXOrstaEmgZAx3jxoUESEYER0uryhb+4+W7+ylCPzs+ISo8OR+n6K0zHCDDpe8D65fya28nrOeGbdLaBvnTlsTuHjafW3wt+h34D8S346XK1+RYTMJnO6pwGOqcBnW+nmINHU3Hb6lstTFkRTGzQRpBuESiFN+kxOwvrLki2BkpJ8FSYSsy63nliA62lFIN8GLpkpMSOfeOGOaY7DFgWcHW+AGTqFXRthrWD80pVX3sP62wV0Tsi6Ok93ak+RMbqXZZn0Olgq/AAQma50Llz9xjzZFJ0pPAZABlyZkOKRtDh5YD0QRk4xbsLmhQkhqlNbsU1SF7IVkV+VKe90Ym4bhCIvt4=
+  cognito:
+    appClientId: 6ggiri7mljsr9snirs11gojodf
+    appClientSecret: 18253gag5899oibibr0i2dja9oumuuiv3t53su6og9use8rk48pa
+    userPoolId: us-east-1_51FqigTv7
+  kms:
+    asymmetricAlias: "nu0191001/clave-alfanumerica/dev"
+management:
+  health:
+    probes:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessstate, cacheCheck, livenessStateProbeIndicator,diskSpace,refreshScope
+        exploratory:
+          include: livenessState, readinessState,ping
+          show-details: always
+        readiness:
+          include: readinessStateProbeIndicator
+cloudwatch:
+  logGroup: LogsTransversales #nu0191001-CLAVEALFANUMERICA-DESENCOLAR.MESSAGES.LOG
+  logStreams: LogsRabbitCognitoStream

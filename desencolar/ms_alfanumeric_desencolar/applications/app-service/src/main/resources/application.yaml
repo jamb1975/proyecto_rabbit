@@ -1,0 +1,71 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: "ms_clave_alfanumerica_desencolar"
+  main:
+    web-application-type: "reactive"
+
+  sleuth:
+    propagation:
+      type: "aws"
+    reactor:
+      instrumentation-type: "decorate_queues"
+  profiles:
+    active: "${SPRING_PROFILE_ACTIVE:local}"
+aws:
+  credentialsSecretName: nu0191001-clave-alfanumerica-dev-secret
+  cognito:
+    appClientId: "${APP_CLIENT_ID}"
+    appClientSecret: "${APP_CLIENT_SECRET}"
+    userPoolId: "${USER_POOL_ID}"
+  kms:
+    keyId: "${KMS_KEY_ID}"
+    asymmetricAlia  s: "${KMS_KEY_ALIAS}"
+  region: "us-east-1"
+  secretName: "my-secret"
+management:
+  health:
+    probes:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      show-details: "always"
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: "livenessstate, cacheCheck, livenessStateProbeIndicator,diskSpace,refreshScope"
+        exploratory:
+          include: "livenessState, readinessState,ping"
+          show-details: "always"
+        readiness:
+          include: "readinessStateProbeIndicator"
+adapters:
+  aws:
+    credentialsSecretName: #{CREDENTIALSSECRETNAME}
+    kms:
+      region: "us-east-1"
+      host: "localhost"
+      protocol: "http"
+      port: "4566"
+      keyId: "add-your-key-here"
+  rabbitmq:
+    host: "${RABBIT_MQ_HOST}"
+    port: "${RABBIT_MQ_PORT}"
+    username: "${RABBIT_MQ_USERNAME}"
+    password: "${RABBIT_MQ_PASSWORD}"
+    virtualhost: "${RABBIT_MQ_VIRTUALHOST}"
+    ssl:
+      enabled: true
+queue:
+  queue_create: "${RABBIT_MQ_QUEUE_CREATE}"
+  queue_auth: "${RABBIT_MQ_QUEUE_AUTH}"
+  queue_update: "${RABBIT_MQ_QUEUE_UPDATE}"
+cognito:
+  timewait: "${COGNITO_TIMEWAIT}"
+  reintentos: "${COGNITO_REINTENTOS}"

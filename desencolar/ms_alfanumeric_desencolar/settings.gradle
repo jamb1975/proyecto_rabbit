@@ -1,0 +1,25 @@
+rootProject.name = 'ms_clave_alfanumeric_desencolar'
+
+include ':app-service'
+include ':model'
+include ':usecase'
+project(':app-service').projectDir = file('./applications/app-service')
+project(':model').projectDir = file('./domain/model')
+project(':usecase').projectDir = file('./domain/usecase')
+include ':rabbitmqadapter'
+project(':rabbitmqadapter').projectDir = file('./infrastructure/driven-adapters/rabbitmqadapter')
+include ':reactive-web'
+project(':reactive-web').projectDir = file('./infrastructure/entry-points/reactive-web')
+include ':rest-consumer'
+project(':rest-consumer').projectDir = file('./infrastructure/driven-adapters/rest-consumer')
+include ':metrics'
+project(':metrics').projectDir = file('./infrastructure/helpers/metrics')
+include ':kms'
+project(':kms').projectDir = file('./infrastructure/driven-adapters/kms')
+include ':cognito'
+project(':cognito').projectDir = file('./infrastructure/driven-adapters/cognito')
+include ':utility'
+project(':utility').projectDir = file('./infrastructure/helpers/utility')
+include 'infrastructure:helpers:utility:test'
+findProject(':infrastructure:helpers:utility:test')?.name = 'test'
+

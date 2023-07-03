@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "cognito",
+      "type": "co.com.bancolombia.rabbitmqadapter.properties.RabbitMqBaseProperties",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.properties.RabbitMqBaseProperties"
+    },
+    {
+      "name": "queue",
+      "type": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "cognito.reintentos",
+      "type": "java.lang.Long",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.properties.RabbitMqBaseProperties"
+    },
+    {
+      "name": "cognito.timewait",
+      "type": "java.lang.Long",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.properties.RabbitMqBaseProperties"
+    },
+    {
+      "name": "queue.amqp-admin",
+      "type": "org.springframework.amqp.core.AmqpAdmin",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig"
+    },
+    {
+      "name": "queue.properties",
+      "type": "org.springframework.boot.autoconfigure.amqp.RabbitProperties",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig"
+    },
+    {
+      "name": "queue.queue-auth",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig"
+    },
+    {
+      "name": "queue.queue-create",
+      "type": "java.lang.String",
+      "sourceType": "co.com.bancolombia.rabbitmqadapter.config.RabbitMqConfig"
+    }
+  ],
+  "hints": []
+}

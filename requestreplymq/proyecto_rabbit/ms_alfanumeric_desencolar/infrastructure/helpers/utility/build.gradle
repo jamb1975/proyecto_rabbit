@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+}
+dependencies {
+    api project(':model')
+    implementation 'software.amazon.awssdk:kms'
+    implementation 'com.amazonaws:aws-java-sdk-kms:1.12.280'
+
+}

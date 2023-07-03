@@ -1,0 +1,124 @@
+name: $(Build.SourceBranchName).$(date:yyyyMMdd)$(rev:.r)
+# Set variables once
+
+variables:
+  - group: 'devsecops_engine'
+  - name: 'Repository.NameArtifactory'
+    value: 'build-NU0191001_ms_alphanumeric_create' #cambiar nombre
+  - name: 'projectName'
+    value: 'AlphanumericCreate'
+  - name: 'artifactName'
+    value: 'AlphanumericCreate'
+  - name: 'componentName'
+    value: 'ms_alphanumeric_create' #hace referencia al nombre del folder
+  - name: 'NU'
+    value: 'NU0191001_Clave_Alfanumerica_Upgrade_MR'
+
+resources:
+  - repo: self
+
+trigger:
+  branches:
+    include:
+      - trunk
+      - feature/*
+  paths:
+    include:
+      - ms_alphanumeric_create/*
+
+jobs:
+  - job: CompilacionPublicacionArtefactoJob
+    displayName: 'Compilación y Publicación Artefacto'
+    pool:
+      name: Build
+      demands:
+        - java
+#        - Agent.OS -equals Windows_NT
+
+    steps:
+      - task: SonarQubePrepare@4
+        displayName: 'Prepare analysis on SonarQube'
+        inputs:
+          SonarQube: SonarQube
+          scannerMode: CLI
+          configMode: manual
+          cliProjectKey: '$(Build.Repository.Name)_$(componentName)'
+          cliProjectName: '$(Build.Repository.Name)_$(componentName)'
+          cliProjectVersion: '$(Build.BuildNumber)'
+          cliSources: '$(componentName)/applications/app-service/src'
+          extraProperties: |
+            sonar.sources=$(Build.SourcesDirectory)/$(componentName)/applications/app-service/src/
+            sonar.tests=$(Build.SourcesDirectory)/$(componentName)/applications/app-service/src/test/java/
+            sonar.java.binaries=$(Build.SourcesDirectory)/$(componentName)/applications/app-service/build/classes
+            sonar.junit.reportsPath=$(Build.SourcesDirectory)/$(componentName)/applications/app-service/build/test-results/test
+            sonar.java.coveragePlugin=jacoco
+            sonar.coverage.jacoco.xmlReportPaths=$(Build.SourcesDirectory)/$(componentName)/applications/app-service/build/reports/jacoco.xml
+            sonar.exclusions=$(componentName)/applications/app-service/src/test/**
+            sonar.coverage.exclusions=**/util/**,**/exception/**,**/AlphanumericCreateMain.java,**/config/PersistenceConfiguration.java
+            sonar.verbose=true
+
+      - task: Gradle@2
+        displayName: 'Gradle build and test'
+        inputs:
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(componentName)'
+          gradleWrapperFile: '$(System.DefaultWorkingDirectory)/$(componentName)/gradlew'
+          tasks: 'clean build jacocoMergedReport'
+          publishJUnitResults: true
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/$(componentName)/**/TEST-*.xml'
+          sqGradlePluginVersionChoice: "build"
+          sonarQubeRunAnalysis: false
+        env:
+          JAVA_HOME: $(JAVA_HOME_11_X64)
+        # sonarQubeGradlePluginVersion: 2.7
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results **/TEST-*.xml'
+
+      - task: SonarSource.sonarqube.6D01813A-9589-4B15-8491-8164AEB38055.SonarQubeAnalyze@4
+        displayName: 'Run Code Analysis'
+
+      - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
+        displayName: 'Publish Quality Gate Result'
+
+      - task: SimondeLang.sonar-buildbreaker.sonar-buildbreaker.sonar-buildbreaker@8
+        displayName: 'Break build on quality gate failure'
+        inputs:
+          SonarQube: SonarQube
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/applications/app-service/build/libs/"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Dockerfile"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/deployment/Dockerfile"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Kubernetes"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/deployment/k8s"
+          componentName: "$(artifactName)"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+          #      - task: PublishBuildArtifacts@1
+          #        displayName: "Publish Tests"
+          #        inputs:
+          #          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/tests"
+          #          componentName: "tests"
+          #          publishLocation: "Container"
+          #          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Performance"
+        inputs:
+          PathtoPublish: "$(System.DefaultWorkingDirectory)/$(componentName)/performance"
+          componentName: "Performance"
+          publishLocation: "Container"
+          #condition: and(succeeded(), eq(variables['Build.SourceBranch'],'refs/heads/trunk'))

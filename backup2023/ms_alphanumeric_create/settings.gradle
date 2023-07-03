@@ -1,0 +1,36 @@
+pluginManagement {
+    repositories {
+        maven {
+            url 'https://artifactory.apps.bancolombia.com/maven-bancolombia'
+        }
+    }
+}
+
+rootProject.name = 'ms-alphanumeric-create'
+
+include ':app-service'
+include ':model'
+include ':usecase'
+project(':app-service').projectDir = file('./applications/app-service')
+project(':model').projectDir = file('./domain/model')
+project(':usecase').projectDir = file('./domain/usecase')
+include ':cognito'
+project(':cognito').projectDir = file('./infrastructure/driven-adapters/cognito')
+include ':utility'
+project(':utility').projectDir = file('./infrastructure/helpers/utility')
+include ':rest-service'
+project(':rest-service').projectDir = file('./infrastructure/entry-points/rest-service')
+include ':kms'
+project(':kms').projectDir = file('./infrastructure/driven-adapters/kms')
+include ':rest-consumer'
+project(':rest-consumer').projectDir = file('./infrastructure/driven-adapters/rest-consumer')
+include ':mq-sender'
+project(':mq-sender').projectDir = file('./infrastructure/driven-adapters/mq-sender')
+include ':rabbitmqadapter'
+project(':rabbitmqadapter').projectDir = file('./infrastructure/driven-adapters/rabbitmqadapter')
+include ':dynamo-db'
+project(':dynamo-db').projectDir = file('./infrastructure/driven-adapters/dynamo-db')
+include ':metrics'
+project(':metrics').projectDir = file('./infrastructure/helpers/metrics')
+include ':sqs-sender'
+project(':sqs-sender').projectDir = file('./infrastructure/driven-adapters/sqs-sender')

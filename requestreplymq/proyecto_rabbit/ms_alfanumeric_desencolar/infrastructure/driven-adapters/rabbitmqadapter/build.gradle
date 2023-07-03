@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':model')
+    implementation project(':cognito')
+    implementation 'org.springframework:spring-context'
+    // https://mvnrepository.com/artifact/io.projectreactor.rabbitmq/reactor-rabbitmq
+    implementation group: 'io.projectreactor.rabbitmq', name: 'reactor-rabbitmq', version: '1.5.5'
+    implementation group: 'org.springframework.boot',name: 'spring-boot-starter-amqp'
+    implementation group: 'org.springframework.integration', name: 'spring-integration-amqp'
+
+
+}

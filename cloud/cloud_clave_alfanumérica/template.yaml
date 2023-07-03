@@ -1,0 +1,985 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Archivo para el despliegue como codigo de la infraestructura de la arquitectura de referencia
+
+# Definicion de parametros
+Parameters:
+
+  #Despliegue de componentes
+  DeployRDS:
+    Description: Define si se despliega RDS (si/no)
+    Type: String
+  DeployEKS:
+    Description: Define si se despliega EKS (si/no)
+    Type: String
+  DeployCloudFront:
+    Description: Define si se despliega CloudFront (si/no)
+    Type: String
+  DeploySQS: #Se deja? Se quita?
+    Description: Define si se desplegar SQS (si/no)
+    Type: String
+  DeployElasticCache:
+    Description: Define si se desplegar Elastic Cache (si/no)
+    Type: String
+  DeployAttachment:
+    Description: Define si se despliegan los attachment de los secretos hacia la RDS (si/no)
+    Type: String
+  MQEngine:
+    Description: Broker engine
+    Type: String
+    Default: rabbitmq
+
+  #Generales
+  project:
+    Description: Nombre del proyecto.
+    Type: String
+  environment:
+    Description: Ambiente donde se despliega.
+    Type: String
+  applicationcode:
+    Description: Codigo AW de la aplicacion.
+    Type: String
+  pmo:
+    Description: PMO del proyecto de la aplicacion
+    Type: String
+  costcenter:
+    Description: Centro de costos
+    Type: String
+  businessservice:
+    Description: Nombre del componente mayor al que pertenece la aplicacion
+    Type: String
+  responsible:
+    Description: Reposbile del componente
+    Type: String
+
+  # RDS
+  DBName:
+    Description: Nombre de la base de datos.
+    Type: String
+  DBSnapshot:
+    Description: Snapshot para restauracion
+    Type: String
+  AllocatedStorage:
+    Description: Tamano del almacenamiento en GB.
+    Type: String
+  MaxAllocatedStorage:
+    Description: Tamano del almacenamiento en GB.
+    Type: String
+  UsuarioConexion:
+    Description: Nombre del usuario de conexion de la BD.
+    Type: String
+  Engine:
+    Description: El motor de base de datos que utiliza la instancia de base de datos.
+    Type: String
+  IpFluid:
+    Description: Ip que le permite el acceso a Fluid para pruebas.
+    Type: String
+  IpAdicional:
+    Description: Ip para permitir un acceso adicional
+    Type: String
+  ssmDBSGTransversal:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: lz_DbSgTransversal
+  PrivateBSubnetIds:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: PrivateBSubnetIds
+  DBNameDatical:
+    Description: Nombre de la base de datos de referencia para Datical.
+    Type: String
+
+  # CloudFront
+  domainname:
+    Description: Dominio del sitio web
+    Type: String
+  buckets3:
+    Description: Nombre del bucket donde se almacena el contenido estatico del sitio web
+    Type: String
+  acmcertificatearn:
+    Description: ARN del certificado digital (para ambiente de produccion)
+    Type: String
+  FrontInterno:
+    Description: Define si el front que se va a desplegar es interno (si/no)
+    Type: String
+
+  # SQS
+  QueueName:
+    Description: Nombre de la cola de SQS
+    Type: String
+  QueueType:
+    Description: Tipo de la cola (fifo o estandard)
+    Type: String
+  DelaySeconds:
+    Description: tiempo en segundos durante el que se retrasa la entrega de todos los mensajes de la cola
+    Type: String
+  MessageRetentionPeriod:
+    Description: número de segundos durante los que Amazon SQS conserva un mensaje
+    Type: String
+  MaximumMessageSize:
+    Description: limite del número de bytes que puede contener un mensaje antes de Amazon SQS lo rechace
+    Type: String
+
+  # Elastic cache
+  CacheEngine:
+    Description: motor del cluster de elastic cache
+    Type: String
+  CacheNodes:
+    Description: cantidad de nodos para el cluster de elastic cache
+    Type: String
+
+  # EKS
+  AccountId:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: AccountId
+
+  clusterid:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: clusterId
+
+  # Dynamo
+  DynamoTableSecurityClaveAlfanumericaConsumerParameter:
+    Description: Nombre de la tabla Dynamodb
+    Type: String
+  DynamoTableSecurityClaveAlfanumericaManagement:
+    Description: Nombre de la tabla Dynamodb Management
+    Type: String
+  DynamoTableSecurityClaveAlfanumericaMovement:
+    Description: Nombre de la tabla Dynamodb Movement
+    Type: String
+  DynamoTableSecurityClaveAlfanumericaBlockedlist:
+    Description: Nombre de la tabla Dynamodb Blockedlist
+    Type: String
+  DynamoTableSecurityClaveAlfanumericaBackupDynamo:
+    Description: Nombre de la tabla Dynamodb BackupDynamo
+    Type: String
+
+  #RabbitMQ
+  mqapplicationname:
+    Description: mq_application_name
+    Type: String
+  mqpass:
+    Description: mq_pass
+    Type: String
+  mqmaxretries:
+    Description: mq_max_retries
+    Type: Number
+
+
+  # Parametros del aplicativo
+
+  apiClientsuidid:
+    Description: ClientID para conexion con SUID
+    Type: String
+
+  apiClientsuidsecret:
+    Description: secreto para conexion con SUID
+    Type: String
+
+  clientId:
+    Description: ClientID de CALF
+    Type: String
+
+  clientSecret:
+    Description: secreto de CALF
+    Type: String
+
+  keystoreName:
+    Description: secreto CALF
+    Type: String
+
+  keystorePassword:
+    Description: secreto CALF
+    Type: String
+
+
+
+  # Tags de clasificacion de la informacion
+  TagsClasInfoSegCID:
+    Description: Lista de valores para los tags de clasificación de la informacion de seguridad
+    Type: String
+
+
+#Definicion de mappings
+Mappings:
+
+  Fn::Transform:
+    Name: 'AWS::Include'
+    Parameters:
+      Location: s3://cld0005001-arq-referencia-pdn-bucket/arquitecturas-referencia/native/v3/infra/include-arq-ref-mappings.yaml
+
+  rabbitmq:
+    dev:
+      EngineType: RabbitMQ
+      EngineVersion: "3.8.11"
+      HostInstanceType: mq.t3.micro
+      DeploymentMode: SINGLE_INSTANCE
+      PubliclyAccessible: false
+    qa:
+      EngineType: RabbitMQ
+      EngineVersion: "3.8.11"
+      HostInstanceType: mq.m5.large
+      DeploymentMode: SINGLE_INSTANCE
+      PubliclyAccessible: false
+    pdn:
+      EngineType: RabbitMQ
+      EngineVersion: "3.8.11"
+      HostInstanceType: mq.m5.large
+      DeploymentMode: CLUSTER_MULTI_AZ
+      PubliclyAccessible: false
+
+# Definicion de condiciones
+#Preguntar por las otras condiciones
+Conditions:
+  envDev:
+    Fn::Equals: [ Ref: environment, "dev" ]
+  envCer:
+    Fn::Equals: [ Ref: environment, "qa" ]
+  envPdn:
+    Fn::Equals: [ Ref: environment, "pdn" ]
+
+  Fn::Transform:
+    Name: 'AWS::Include'
+    Parameters:
+      Location: s3://cld0005001-arq-referencia-pdn-bucket/arquitecturas-referencia/native/v3/infra/include-arq-ref-conditions.yaml
+
+# Definicion de recursos
+Resources:
+
+  # Despliegue de: ECR - RDS - CloudFront - EKS Role
+  Fn::Transform:
+    Name: 'AWS::Include'
+    Parameters:
+      Location: s3://cld0005001-arq-referencia-pdn-bucket/arquitecturas-referencia/native/v3/infra/include-arq-ref-resources.yaml
+
+  #Secret Manager
+  ClaveAlfanumericaSecret:
+    DependsOn:
+      - KMSAliaSymetric
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Join [ "-", [ Ref: applicationcode, Ref: project, Ref: environment, "secret" ] ]
+      Description:
+        Fn::Sub: "Secreto para el proyecto Clave alfanumerica"
+      KmsKeyId: !Ref KMSKeySymetric
+      SecretString:
+        Fn::Sub: "{
+                    'suidService':{
+                      'clientId': '${apiClientsuidid}',
+                      'clientSecret': '${apiClientsuidsecret}'
+                    },
+                    'apiConnect':{
+                      'clientId': '${clientId}',
+                      'clientSecret': '${clientSecret}'
+                    },
+                    'keyStore':{
+                      'keystorePassword': '${keystorePassword}',
+                      'keystoreName': '${keystoreName}'
+                    }
+                  }"
+  #MQ
+  SecretMQ:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: !Sub '${project}-${environment}-secretmq-CNX'
+      Description: !Sub 'User Admin secret for MQ Broker of project ${project} on environment ${environment}.'
+      KmsKeyId: !Ref KMSKeySymetric
+      SecretString:
+        Fn::Sub: '{
+                    "mq_user": "${project}-${environment}-admin-mq", 
+                    "mq_pass": "${mqpass}",
+                    "mq_application_name": "${mqapplicationname}", 
+                    "mq_max_retries": "${mqmaxretries}" 
+                  }'
+
+  # Amazon MQ dev
+  MQSecurityGroupDev:
+    Condition: envDev
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName:
+        Fn::Join: [ "-", [ Ref: applicationcode, Ref: project, Ref: environment, mq, sg] ]
+      GroupDescription:
+        Fn::Sub: 'Security Group para el MQ para el proyecto ${project} en ambiente ${environment}'
+      VpcId:
+        Fn::ImportValue: 'DefaultVPCId'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso grupo VPN"
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 10.38.208.0/25
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+  # Amazon MQ cer
+  MQSecurityGroupCer:
+    Condition: envCer
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName:
+        Fn::Join: [ "-", [ Ref: applicationcode, Ref: project, Ref: environment, mq, sg] ]
+      GroupDescription:
+        Fn::Sub: 'Security Group para el MQ para el proyecto ${project} en ambiente ${environment}'
+      VpcId:
+        Fn::ImportValue: 'DefaultVPCId'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso grupo VPN"
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 10.38.208.0/25
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+
+  # Amazon MQ pdn
+  MQSecurityGroupPdn:
+    Condition: envPdn
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName:
+        Fn::Join: [ "-", [ Ref: applicationcode, Ref: project, Ref: environment, mq, sg] ]
+      GroupDescription:
+        Fn::Sub: 'Security Group para el MQ para el proyecto ${project} en ambiente ${environment}'
+      VpcId:
+        Fn::ImportValue: 'DefaultVPCId'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso grupo VPN"
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 10.38.208.0/25
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot amqp"
+          FromPort: 5671
+          ToPort: 5671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+        - IpProtocol: tcp
+          Description: "Acceso al Security group del cluster spot https"
+          FromPort: 15671
+          ToPort: 15671
+          SourceSecurityGroupId: '{{resolve:ssm:EksClusterIdSecurityGroup:1}}'
+  Broker:
+    Type: 'AWS::AmazonMQ::Broker'
+    DependsOn:
+      - SecretMQ
+    Properties:
+      AutoMinorVersionUpgrade: true
+      BrokerName: !Sub '${project}-${environment}-mq'
+      DeploymentMode:
+        Fn::FindInMap:
+          - Ref: MQEngine
+          - Ref: environment
+          - DeploymentMode
+      EngineType:
+        Fn::FindInMap:
+          - Ref: MQEngine
+          - Ref: environment
+          - EngineType
+      EngineVersion:
+        Fn::FindInMap:
+          - Ref: MQEngine
+          - Ref: environment
+          - EngineVersion
+      HostInstanceType:
+        Fn::FindInMap:
+          - Ref: MQEngine
+          - Ref: environment
+          - HostInstanceType
+      PubliclyAccessible: false
+      SubnetIds:
+        - Fn::Select:
+            - 0
+            - Fn::Split:
+                - ","
+                - Ref: PrivateBSubnetIds
+      SecurityGroups:
+        - Fn::If:
+            - envPdn
+            - Ref: MQSecurityGroupPdn
+            - Fn::If:
+                - envCer
+                - Ref: MQSecurityGroupCer
+                - Ref: MQSecurityGroupDev
+      Logs:
+        General: true
+      Users:
+        - ConsoleAccess: true
+          Password: !Join [ '', [ '{{resolve:secretsmanager:', !Ref SecretMQ, ':SecretString:mq_pass}}' ] ]
+          Username: !Join [ '', [ '{{resolve:secretsmanager:', !Ref SecretMQ, ':SecretString:mq_user}}' ] ]
+
+
+  #dynamo
+  DynamoSecurityClaveAlfanumerica:
+    DependsOn:
+      - KMSKeySymetric
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoTableSecurityClaveAlfanumericaConsumerParameter
+      BillingMode: !If [ envPdn, PROVISIONED, PAY_PER_REQUEST ]
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: !If [ envPdn, 5, 0 ]
+        WriteCapacityUnits: !If [ envPdn, 5, 0 ]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt KMSKeySymetric.Arn
+        SSEEnabled: true
+        SSEType: KMS
+
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:dominio-informacion"
+          Value: "ecosistemas-de-riesgos-seguridad-y-apoyo-ti"
+        - Key: "bancolombia:datos-personales"
+          Value: "clientes"
+        - Key: "bancolombia:cumplimiento"
+          Value: "no"
+        - Key: bancolombia:bkmensual
+          Value: dynamodb
+        - Key: "bancolombia:bkdiario"
+          Value: "dynamodb"
+
+  DynamoSecurityClaveAlfanumericaManagement:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoTableSecurityClaveAlfanumericaManagement
+      BillingMode: !If [ envPdn, PROVISIONED, PAY_PER_REQUEST ]
+      AttributeDefinitions:
+        - AttributeName: "cryptoManagementId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "cryptoManagementId"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: !If [ envPdn, 5, 0 ]
+        WriteCapacityUnits: !If [ envPdn, 5, 0 ]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt KMSKeySymetric.Arn
+        SSEEnabled: true
+        SSEType: KMS
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:dominio-informacion"
+          Value: "ecosistemas-de-riesgos-seguridad-y-apoyo-ti"
+        - Key: "bancolombia:datos-personales"
+          Value: "clientes"
+        - Key: "bancolombia:cumplimiento"
+          Value: "no"
+        - Key: bancolombia:bkmensual
+          Value: dynamodb
+        - Key: "bancolombia:bkdiario"
+          Value: "dynamodb"
+
+  DynamoSecurityClaveAlfanumericaMovement:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoTableSecurityClaveAlfanumericaMovement
+      BillingMode: !If [ envPdn, PROVISIONED, PAY_PER_REQUEST ]
+      AttributeDefinitions:
+        - AttributeName: "cryptoMovementId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "cryptoMovementId"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: !If [ envPdn, 5, 0 ]
+        WriteCapacityUnits: !If [ envPdn, 5, 0 ]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt KMSKeySymetric.Arn
+        SSEEnabled: true
+        SSEType: KMS
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:dominio-informacion"
+          Value: "ecosistemas-de-riesgos-seguridad-y-apoyo-ti"
+        - Key: "bancolombia:datos-personales"
+          Value: "clientes"
+        - Key: "bancolombia:cumplimiento"
+          Value: "no"
+        - Key: bancolombia:bkmensual
+          Value: dynamodb
+        - Key: "bancolombia:bkdiario"
+          Value: "dynamodb"
+
+  DynamoSecurityClaveAlfanumericaBlockedlist:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoTableSecurityClaveAlfanumericaBlockedlist
+      BillingMode: !If [ envPdn, PROVISIONED, PAY_PER_REQUEST ]
+      AttributeDefinitions:
+        - AttributeName: "lockedId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "lockedId"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: !If [ envPdn, 5, 0 ]
+        WriteCapacityUnits: !If [ envPdn, 5, 0 ]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt KMSKeySymetric.Arn
+        SSEEnabled: true
+        SSEType: KMS
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:dominio-informacion"
+          Value: "ecosistemas-de-riesgos-seguridad-y-apoyo-ti"
+        - Key: "bancolombia:datos-personales"
+          Value: "clientes"
+        - Key: "bancolombia:cumplimiento"
+          Value: "no"
+        - Key: bancolombia:bkmensual
+          Value: dynamodb
+        - Key: "bancolombia:bkdiario"
+          Value: "dynamodb"
+
+  DynamoSecurityClaveAlfanumericaBackupDynamo:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoTableSecurityClaveAlfanumericaBackupDynamo
+      BillingMode: !If [ envPdn, PROVISIONED, PAY_PER_REQUEST ]
+      AttributeDefinitions:
+        - AttributeName: "backupId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "backupId"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: !If [ envPdn, 5, 0 ]
+        WriteCapacityUnits: !If [ envPdn, 5, 0 ]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt KMSKeySymetric.Arn
+        SSEEnabled: true
+        SSEType: KMS
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:dominio-informacion"
+          Value: "ecosistemas-de-riesgos-seguridad-y-apoyo-ti"
+        - Key: "bancolombia:datos-personales"
+          Value: "clientes"
+        - Key: "bancolombia:cumplimiento"
+          Value: "no"
+        - Key: bancolombia:bkmensual
+          Value: dynamodb
+        - Key: "bancolombia:bkdiario"
+          Value: "dynamodb"
+  ## KMS
+  KMSKeyAsymetric:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: CMK for Asymetric
+      Enabled: True
+      #EnableKeyRotation: True #No puede rotar
+      PendingWindowInDays: 30
+      KeySpec: RSA_2048
+      KeyUsage: ENCRYPT_DECRYPT
+      KeyPolicy:
+        Id: key-policy
+        Version: '2012-10-17'
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Join [ '', [ 'arn:', !Ref 'AWS::Partition', ':iam::', !Ref 'AWS::AccountId', ':root' ] ]
+            Action: kms:*
+            Resource: "*"
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS:
+                'Fn::GetAtt': [ 'RootRole', "Arn" ]
+            Action:
+              - kms:GetPublicKey
+              - kms:GetKeyPolicy
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey
+              - kms:GenerateDataKeyWithoutPlaintext
+            Resource: "*"
+            Condition:
+              StringEquals:
+                kms:ViaService:
+                  - 'secretsmanager.us-east-1.amazonaws.com'
+                  - 'dynamodb.us-east-1.amazonaws.com'
+                  - 'eks.us-east-1.amazonaws.com'
+          - Sid: SSL data in transit disabled
+            Effect: Deny
+            Principal: "*"
+            Action: kms:*
+            Resource: "*"
+            Condition:
+              Bool:
+                aws:SecureTransport: 'false'
+
+  KMSAliasAsymetric:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Join [ '/', [ 'alias', !Ref applicationcode, !Ref project, !Ref environment ] ]
+      TargetKeyId: !Ref KMSKeyAsymetric
+
+  KMSKeySymetric:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: "CMK para cifrar la clave alfanumerica"
+      Enabled: True
+      EnableKeyRotation: True
+      PendingWindowInDays: 30
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: !Sub 'key-${AWS::StackName}'
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Join [ '', [ 'arn:', !Ref 'AWS::Partition', ':iam::', !Ref 'AWS::AccountId', ':root' ] ]
+            Action: 'kms:*'
+            Resource: "*"
+          - Sid: Allow Root Role
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt: RootRole.Arn
+            Action:
+              - kms:GetPublicKey
+              - kms:GetKeyPolicy
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey
+              - kms:GenerateDataKeyWithoutPlaintext
+            Resource: '*'
+            Condition:
+              StringEquals:
+                kms:ViaService:
+                  - 'secretsmanager.us-east-1.amazonaws.com'
+                  - 'dynamodb.us-east-1.amazonaws.com'
+                  - 'eks.us-east-1.amazonaws.com'
+          - Sid: SSL data in transit disabled
+            Effect: Deny
+            Principal: "*"
+            Action: kms:*
+            Resource: "*"
+            Condition:
+              Bool:
+                aws:SecureTransport: 'false'
+
+
+  KMSAliaSymetric:
+    DependsOn:
+      - KMSKeySymetric
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Join [ '/', [ 'alias', !Ref applicationcode, !Ref project, !Ref environment, 'symmetric' ] ]
+      TargetKeyId: !GetAtt KMSKeySymetric.KeyId
+
+
+  # Parametros cognito
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: AUTM07-HADES-COGNITO-USER-POOL-CALF-POC
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          TemporaryPasswordValidityDays: 120
+      Schema:
+        - Name: "sub"
+          AttributeDataType: "String"
+          DeveloperOnlyAttribute: false
+          Mutable: false
+          Required: true
+          StringAttributeConstraints:
+            MinLength: "0"
+            MaxLength: "2048"
+      MfaConfiguration: "OFF"
+      UsernameConfiguration:
+        CaseSensitive: false
+
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: AUTM07-HADES-API-CLIENT-POC-CALF
+      GenerateSecret: true
+      RefreshTokenValidity: 30
+      ReadAttributes:
+        - "name"
+      WriteAttributes:
+        - "name"
+      ExplicitAuthFlows:
+        - "ALLOW_REFRESH_TOKEN_AUTH"
+        - "ALLOW_USER_PASSWORD_AUTH"
+      PreventUserExistenceErrors: "ENABLED"
+      AllowedOAuthFlowsUserPoolClient: false
+      IdTokenValidity: 60
+      AccessTokenValidity: 60
+      TokenValidityUnits:
+        AccessToken: "minutes"
+        IdToken: "minutes"
+        RefreshToken: "days"
+
+  # Politica para el RootRole para asignar permisos a la aplicacion ejecutada en k8s
+  RootRolePolicy:
+    Type: AWS::IAM::Policy
+    Condition: DepEKS
+    DependsOn:
+      - CognitoUserPool
+      - ClaveAlfanumericaSecret
+      - DynamoSecurityClaveAlfanumerica
+      - DynamoSecurityClaveAlfanumericaManagement
+      - DynamoSecurityClaveAlfanumericaMovement
+      - DynamoSecurityClaveAlfanumericaBlockedlist
+      - DynamoSecurityClaveAlfanumericaBackupDynamo
+    Properties:
+      PolicyName:
+        Fn::Join: [ '', [ ekspolicy, Ref: project ] ]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Permisos para Secret Manager
+          - Effect: 'Allow'
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource:
+              #- Ref: SecretCNXRDS
+              - Ref: ClaveAlfanumericaSecret
+            # Permisos sobre tabla dynamo
+          - Effect: 'Allow'
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:BatchGetItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:BatchWriteItem
+            Resource:
+              - !GetAtt CognitoUserPool.Arn
+              - !GetAtt DynamoSecurityClaveAlfanumerica.Arn
+              - !GetAtt DynamoSecurityClaveAlfanumericaManagement.Arn
+              - !GetAtt DynamoSecurityClaveAlfanumericaMovement.Arn
+              - !GetAtt DynamoSecurityClaveAlfanumericaBlockedlist.Arn
+              - !GetAtt DynamoSecurityClaveAlfanumericaBackupDynamo.Arn
+          - Effect: Allow
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: !GetAtt KMSKeyAsymetric.Arn
+          - Effect: Allow
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: !GetAtt KMSKeySymetric.Arn
+            # Permisos para EKS
+          - Effect: Allow
+            Action:
+              - eks:UpdateClusterConfig
+              - eks:DescribeCluster
+              - eks:ListClusters
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
+              - cognito-idp:*
+              - cognito-idp:AdminConfirmSignUp
+              - cognito-idp:AdminUpdateUserAttributes
+              - cognito-idp:AdminInitiateAuth
+              - cognito-idp:AdminResetUserPassword
+              - cognito-idp:ListUsers
+              - cognito-idp:AdminDisableUser
+              - cognito-idp:AdminGetUser
+              - cognito-idp:AdminDeleteUser
+            Resource: "*"
+      Roles:
+        - Ref: RootRole
+        - Ref: EKSRole
+
+  # Lambda headers - role
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
+    Condition: DepCloudFront
+    Properties:
+      PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/Lz-Governance-Boundary
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+                - 'secretsmanager.amazonaws.com'
+                - 'edgelambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+
+  CloudfrontFunction:
+    Type: AWS::Lambda::Function
+    Condition: DepCloudFront
+    DependsOn:
+      - LambdaRole
+    Properties:
+      Description: Funcion lambda que modifica las cabeceras de seguridad
+      Code:
+        ZipFile: !Sub |
+          'use strict';
+          exports.handler = (event, context, callback) => {
+            //Get contents of response
+            const response = event.Records[0].cf.response;
+            const headers = response.headers;
+            //Set new headers
+                //Se debe adicionar las reglas correspondientes al proyecto para la cabecera Content Security Policy
+                headers['content-security-policy'] = [{key: 'Content-Security-Policy', value: "default-src 'self'"}];
+                headers['strict-transport-security'] = [{key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubdomains; preload'}];
+                headers['x-content-type-options'] = [{key: 'X-Content-Type-Options', value: 'nosniff'}];
+                headers['x-xss-protection'] = [{key: 'X-XSS-Protection', value: '1; mode=block'}];
+                headers['referrer-policy'] = [{key: 'Referrer-Policy', value: 'same-origin'}];
+                headers['access-control-allow-origin'] = [{key: 'Access-Control-Allow-Origin', value: 'https://${domainname}'}];
+                headers['x-permitted-cross-domain-policies'] = [{key: 'X-Permitted-Cross-Domain-Policies', value: 'master-only'}];
+                headers['cache-control'] = [{key: 'Cache-Control', value: 'no-cache; must-revalidate; pre-check= 0; post-check= 0; max-age= 0; s-maxage= 0; no-store'}];
+                headers['pragma'] = [{key: 'Pragma', value: 'no-cache'}];
+                headers['x-frame-options'] = [{key: 'X-Frame-Options', value: 'DENY'}];
+                headers['expires'] = [{key: 'Expires', value : '0'}];
+                headers['server'] = [{key: 'Server', value : ''}];
+            //Return modified response
+            callback(null, response);
+          };
+      FunctionName:
+        Fn::Sub: lambda-headers-${project}-${environment}
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt: LambdaRole.Arn
+      Runtime: nodejs12.x
+      Timeout: 3
+      Tags:
+        - Key: "bancolombia:clasificacion-confidencialidad"
+          Value: "confidencial"
+        - Key: "bancolombia:clasificacion-integridad"
+          Value: "impacto tolerable"
+        - Key: "bancolombia:clasificacion-disponibilidad"
+          Value: "impacto tolerable"
+
+  # Lambda headers - Version
+  VersionedLambdaFunction:
+    Type: 'AWS::Lambda::Version'
+    Condition: DepCloudFront
+    Properties:
+      FunctionName:
+        Ref: CloudfrontFunction
+
+
+# Definicion de salidas
+Outputs:
+  CognitoUserPoolID:
+    Value: !Ref CognitoUserPool
+    Description: The UserPool ID
+  CognitoAppClientID:
+    Value: !Ref CognitoUserPoolClient
+    Description: The app client
+  UserPoolClientIdSecret:
+    Value: !GetAtt CognitoUserPoolClient.ClientSecret
+    Description: The secret app client
+  Fn::Transform:
+    Name: 'AWS::Include'
+    Parameters:
+      Location: s3://cld0005001-arq-referencia-pdn-bucket/arquitecturas-referencia/native/v3/infra/include-arq-ref-outputs.yaml

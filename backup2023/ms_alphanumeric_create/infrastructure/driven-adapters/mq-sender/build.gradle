@@ -1,0 +1,20 @@
+dependencies {
+    implementation project(':model')
+ //   implementation 'com.github.bancolombia:commons-jms-mq:0.3.0'
+    implementation 'org.springframework:spring-context'
+    implementation 'io.micrometer:micrometer-core'
+
+//    implementation 'org.apache.activemq:activemq-client:5.17.2'
+//    implementation 'org.apache.activemq:activemq-pool:5.17.2'
+   // implementation 'org.apache.activemq:activemq-jms-pool:5.9.0'
+
+    implementation 'com.rabbitmq:amqp-client:5.16.0'
+  //  implementation 'com.rabbitmq.jms:rabbitmq-jms:2.6.0'
+
+
+    // https://mvnrepository.com/artifact/io.projectreactor.rabbitmq/reactor-rabbitmq
+    implementation group: 'io.projectreactor.rabbitmq', name: 'reactor-rabbitmq', version: '1.5.5'
+    implementation group: 'org.springframework.boot',name: 'spring-boot-starter-amqp'
+    implementation group: 'org.springframework.integration', name: 'spring-integration-amqp'
+
+}

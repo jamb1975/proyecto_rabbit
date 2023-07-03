@@ -1,0 +1,22 @@
+--Conexion AWS
+aws eks update-kubeconfig --name eks-ecosistemas-de-riesgos-dev --region us-east-1
+
+--ver Pods de un namespace
+kubectl get pods -n clave-alfanumerica-dev
+
+--ver logs
+kubectl logs alphanumeric-password-desencolar-deployment-fd469888b-v8ftb -n clave-alfanumerica-dev
+
+
+consulta cognitoappclientsecret: 
+aws cognito-idp describe-user-pool-client --user-pool-id us-west-2_aaaaaaaaa --client-id 38fjsnc484p94kpqsnet7mpld0
+
+
+appclientcognitoid : 4tano1s8hmlno1i04hgl681t6u
+
+b-ab822e84-5b0f-47b9-9306-1cbfc2ebdcab.mq.us-east-1.amazonaws.com
+
+b-d05f4718-7e6e-4bac-9e3e-883e0b2edc03.mq.us-east-1.amazonaws.com:5671
+
+[919853973687_BCO-FullStackDevRole]
+aws_access_key_id=ASIA5MK4RYC3SSAIFCWK;aws_secret_access_key=bQuNy7fEcE5gaqwm89F4Kq94iXAzET9mYSibZqJs;aws_session_token=IQoJb3JpZ2luX2VjELX//////////wEaCXVzLWVhc3QtMSJIMEYCIQCC8Vke1N/fOwl4tQ5m2ZNyGn/5ZrUUogtVmJA5sDgc8AIhALas7aDbppFy8wrU94MDuQLI51Vr25uhlyJoa2r/dnHaKpQDCE4QAxoMOTE5ODUzOTczNjg3IgwnrUH6AQ9tNP1dEGEq8QI+3Y1U3UqFKvZPvfg3qIorBjUpNRvPCUa6TQsxUssfFUOkR3arXRVcesZaU9kxwepO4WZcw2Pa/4DPx60N6BOs6SgIuS3OtCXTcq6tt55Sj8gnXZIBMH6Tswfobmnxgg98BbZ9KYqf82r31sfoBr7t1O6XXr4oEO4A8mBNzegBo2DOqPtEb4boKU0YTmMX22MT1nsD4rn0L99JNr5eEif/SPqao6Tr35+hqFKsnpdOnfp+I4jlsMimX4DdWkQUvhPMTYCoA1Ee+7ktanmFaXP/INkY4J48mZvxpN00hu5fQ8UFD+44nVN49u5LfjwA2cv8e7jQhIMtalaIUT+/5XW35QOaL7KeM0jgGStNhQGptXh2ipbFqFTtwmd6sETKSMVU/JOo6TxEoM2xor1y5Vhq6OLEU2W7iNQneqF4iHVCulCCse9o28brBar94m2mKHhJBFMzyZT8v98ETkOg3+M9dzYauKfHhZZUQBygN8YoDcQw6am6nwY6pQFC8sDygDRECZ7W/tM5wC5d/fB2dXBecJW/JUnURd5z2Et9zv3jzp9EDqx/64w36FI0sp60NUW+AMoYNONVDMQazozbuCg61mSKBQZ+wINidb4BCpi8Roy+fYoNy+cMewS1KKPGhnx9nSh2V27ZFIM1PgInlCbRd+ejOhE8xlYE0XAlTTllH4plsX1a8xJq1DS0HkjpNHBocOjB5GqwG0ygtTavqPQ=

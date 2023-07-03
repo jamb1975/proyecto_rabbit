@@ -1,0 +1,42 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+	implementation project( ':sqs-sender')
+	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+	implementation project( ':dynamo-db')
+	implementation project( ':metrics')
+    implementation project( ':mq-sender')
+    implementation project( ':rest-consumer')
+    implementation project(':kms')
+    implementation project(':rest-service')
+    implementation project(':utility')
+    implementation project(':cognito')
+    implementation project(':usecase')
+    implementation project(':rabbitmqadapter')
+
+    implementation 'software.amazon.awssdk:secretsmanager'
+    implementation 'software.amazon.awssdk:kms'
+    implementation "org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
+
+    implementation "com.amazonaws:aws-java-sdk-sts:${sts}"
+    implementation "com.amazonaws:aws-java-sdk-secretsmanager:${secretsmanager}"
+    implementation 'software.amazon.awssdk:sqs'
+}
+
+task explodedJar(type: Copy) {
+    with jar
+    into "${buildDir}/exploded"
+}
+
+
+configurations {
+    compile.exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+}
+
+bootJar {
+    // Sets output jar name
+    archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
+}
